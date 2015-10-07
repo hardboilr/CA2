@@ -1,0 +1,10 @@
+insert into hobby (name, description) values ('programming', 'software development');
+insert into hobby (name, description) values ('swimming', 'swimming fast');
+insert into hobby (name, description) values ('freediving', 'diving with fancy gear');
+insert into hobby (name, description) values ('scubadiving', 'diving with air or nitrox');
+insert into hobby (name, description) values ('running', 'running fast or slow');
+insert into hobby (name, description) values ('chess', 'playing chess against other nerds');
+insert into hobby (name, description) values ('magic cards', 'being a nerd');
+insert into hobby (name, description) values ('gaming', 'playing computer games ');
+insert into hobby (name, description) values ('jumping', 'jumping as high as one can');
+insert into hobby (name, description) values ('grand theft auto', 'stealing cars');

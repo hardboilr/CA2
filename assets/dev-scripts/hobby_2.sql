@@ -1,0 +1,12 @@
+insert into hobby (name, description) values ('fishing', 'catching fish with a fishing rod');
+insert into hobby (name, description) values ('coffee roasting', 'making ones own coffee from raw coffee beans');
+insert into hobby (name, description) values ('dance', 'dancing and having a gay time');
+insert into hobby (name, description) values ('sewing', 'making ones own clothes');
+insert into hobby (name, description) values ('sketching', 'drawing ones ideas on a piece of paper');
+insert into hobby (name, description) values ('soapmaking', 'making nice smelling soaps');
+insert into hobby (name, description) values ('stand-up comedy', 'being funny');
+insert into hobby (name, description) values ('yoga', 'being flexible');
+insert into hobby (name, description) values ('archery', 'target practice with bow and arrow');
+insert into hobby (name, description) values ('shooting', 'target practice with a gun');
+insert into hobby (name, description) values ('cycling', 'pedalling very fast');
+insert into hobby (name, description) values ('skydiving', 'falling from the sky');
