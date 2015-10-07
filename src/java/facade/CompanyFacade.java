@@ -1,14 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package facade;
 
 import entities.CityInfo;
 import entities.Company;
 import exception.CompanyNotFoundException;
-//import exception.CompanyNotFoundException;
 import interfaces.ICompanyFacade;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -16,10 +10,6 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
-/**
- *
- * @author sebastiannielsen
- */
 public class CompanyFacade implements ICompanyFacade {
 
     private EntityManagerFactory emf;
@@ -102,7 +92,6 @@ public class CompanyFacade implements ICompanyFacade {
         } finally {
             em.close();
         }
-
     }
 
     @Override
@@ -123,28 +112,26 @@ public class CompanyFacade implements ICompanyFacade {
             em.getTransaction().commit();
             return edited;
         } catch (NoResultException e) {
-            throw new CompanyNotFoundException("No Company found with provided cvr");
+            throw new CompanyNotFoundException("No Company found");
         } finally {
             em.close();
         }
     }
 
     @Override
-    public Company deleteCompany(long cvr) throws Exception {
+    public Company deleteCompany(long cvr) throws CompanyNotFoundException {
         EntityManager em = getEntityManager();
         try {
             Query query = em.createQuery("SELECT c FROM Company c WHERE c.cvr=:cvr").setParameter("cvr", cvr);
             Company c = (Company) query.getSingleResult();
-            if (c == null) {
-                throw new Exception("fuck dig") /*CompanyNotFoundException("No Company found with provided cvr")*/;
-            }
             em.getTransaction().begin();
             em.remove(c);
             em.getTransaction().commit();
             return c;
+        } catch (NoResultException e) {
+            throw new CompanyNotFoundException("No Company found with provided cvr");
         } finally {
             em.close();
         }
     }
-
 }

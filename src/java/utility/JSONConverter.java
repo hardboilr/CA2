@@ -32,7 +32,6 @@ public class JSONConverter {
     public static Company getCompanyFromJson(String js) {
         System.out.println(js);
         Company company = gson.fromJson(js, Company.class);
-        System.out.println(company.getAddress().getCity().getZipCode());
         return company;
     }
 
@@ -60,6 +59,10 @@ public class JSONConverter {
             jsonArray.add(jso);
         }
         jsonObject.add("phones", jsonArray);
+        jsonObject.addProperty("street", c.getAddress().getStreet());
+        jsonObject.addProperty("additionalInfo", c.getAddress().getAdditionalInfo());
+        jsonObject.addProperty("zipCode", c.getAddress().getCity().getZipCode());
+        jsonObject.addProperty("city", c.getAddress().getCity().getCity());
         return gson.toJson(jsonObject);
     }
 
@@ -92,6 +95,10 @@ public class JSONConverter {
                 jsoPhoneArray.add(jsoPhone);
             }
             jsoCompany.add("phones", jsoPhoneArray);
+            jsoCompany.addProperty("street", c.getAddress().getStreet());
+            jsoCompany.addProperty("additionalInfo", c.getAddress().getAdditionalInfo());
+            jsoCompany.addProperty("zipCode", c.getAddress().getCity().getZipCode());
+            jsoCompany.addProperty("city", c.getAddress().getCity().getCity());
             jsoCompanyArray.add(jsoCompany);
         }
         jsoCompanies.add("companies", jsoCompanyArray);

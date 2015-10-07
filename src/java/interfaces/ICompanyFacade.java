@@ -18,6 +18,5 @@ public interface ICompanyFacade {
     List<Company> getCompaniesInCity(CityInfo city) throws Exception;
     List<Company> getCompaniesWithEmployeeCount(Long empCount) throws Exception;
     Company editCompany(Company c) throws CompanyNotFoundException;
-    Company deleteCompany(long cvr) throws Exception;
-    
+    Company deleteCompany(long cvr) throws CompanyNotFoundException;
 }
