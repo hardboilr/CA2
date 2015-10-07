@@ -45,12 +45,12 @@ public class JSONConverter {
     public static String getJSONFromCompany(Company c) {
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("id", c.getId());
-        jsonObject.addProperty("cvr", c.getCvr());
-        jsonObject.addProperty("description", c.getDescription());
-        jsonObject.addProperty("name", c.getName());
         jsonObject.addProperty("email", c.getEmail());
-        jsonObject.addProperty("marketValue", c.getMarketValue());
+        jsonObject.addProperty("name", c.getName());
+        jsonObject.addProperty("description", c.getDescription());
+        jsonObject.addProperty("cvr", c.getCvr());
         jsonObject.addProperty("NumEmployees", c.getNumEmployees());
+        jsonObject.addProperty("marketValue", c.getMarketValue());
         JsonArray jsonArray = new JsonArray();
         for (Phone phone : c.getPhones()) {
             JsonObject jso = new JsonObject();
@@ -72,7 +72,7 @@ public class JSONConverter {
      * OBS!!!--> we nest all companies in a companies-object: "jsoCompanies" .
      * Alternatively, return the jsonArray directly: "jsoCompanyArray"
      *
-     * @param c company object
+     * @param companies company object
      * @return string formatted as json
      */
     public static String getJSONFromCompany(List<Company> companies) {
@@ -81,12 +81,12 @@ public class JSONConverter {
         for (Company c : companies) {
             JsonObject jsoCompany = new JsonObject();
             jsoCompany.addProperty("id", c.getId());
-            jsoCompany.addProperty("cvr", c.getCvr());
-            jsoCompany.addProperty("description", c.getDescription());
-            jsoCompany.addProperty("name", c.getName());
             jsoCompany.addProperty("email", c.getEmail());
-            jsoCompany.addProperty("marketValue", c.getMarketValue());
+            jsoCompany.addProperty("name", c.getName());
+            jsoCompany.addProperty("description", c.getDescription());
+            jsoCompany.addProperty("cvr", c.getCvr());
             jsoCompany.addProperty("NumEmployees", c.getNumEmployees());
+            jsoCompany.addProperty("marketValue", c.getMarketValue());
             JsonArray jsoPhoneArray = new JsonArray();
             for (Phone phone : c.getPhones()) {
                 JsonObject jsoPhone = new JsonObject();

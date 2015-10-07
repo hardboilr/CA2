@@ -82,7 +82,7 @@ public class RestServiceCompany {
     @Consumes("application/json")
     public Response createCompany(String company) {
         Company c = JSONConverter.getCompanyFromJson(company);
-        return Response.status(Response.Status.CREATED).entity(facade.createCompany(c)).build();
+        return Response.status(Response.Status.CREATED).entity(JSONConverter.getJSONFromCompany(facade.createCompany(c))).build();
     }
 
     /*OK*/
