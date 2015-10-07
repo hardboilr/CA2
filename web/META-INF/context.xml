@@ -1,2 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Context antiJARLocking="true" path="/CA2"/>
+<Context antiJARLocking="true" path="/CA2">
+  <Resource auth="Container" driverClassName="com.mysql.jdbc.Driver" maxActive="20" maxIdle="10" maxWait="-1" name="pu_dev" password="root" type="javax.sql.DataSource" url="jdbc:mysql://localhost:3306/mysql_ca2_dev?zeroDateTimeBehavior=convertToNull" username="root"/>
+</Context>
