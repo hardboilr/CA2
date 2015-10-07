@@ -1,7 +1,9 @@
-package exception;
+package exception.mapper;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import exception.CompanyNotFoundException;
+import exception.ErrorMessage;
 import exception.ErrorMessage;
 import javax.servlet.ServletContext;
 import javax.ws.rs.core.Context;
