@@ -100,6 +100,7 @@ public class RestServicePerson {
 
     @POST
     @Consumes("application/json")
+    @Produces("application/json")
     public Response createPerson(String person) {
         Person p = JSONConverter.getPersonFromJson(person);
         try {
@@ -112,10 +113,11 @@ public class RestServicePerson {
     @PUT
     @Path("/edit/{phone}")
     @Consumes("application/json")
+    @Produces("application/json")
     public Response editPerson(@PathParam("phone") String phone, String person) {
         Person p = JSONConverter.getPersonFromJson(person);
         try {
-            return Response.ok(facade.editPerson(p, p.getPhones().get(0).toString())).build();
+            return Response.ok(facade.editPerson(p, phone)).build();
         } catch (PersonNotFoundException ex) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
@@ -123,6 +125,7 @@ public class RestServicePerson {
 
     @DELETE
     @Path("/delete/{id}")
+    @Produces("application/json")
     public Response deletePerson(@PathParam("id") long id) {
         try {
             return Response.status(Response.Status.OK).entity(facade.deletePerson(id)).build();

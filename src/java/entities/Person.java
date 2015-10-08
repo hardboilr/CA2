@@ -23,12 +23,6 @@ public class Person extends InfoEntity {
         this.lastName = lastName;
     }
 
-    public Person(String firstName, String lastName, String email) {
-        super(email);
-        this.firstName = firstName;
-        this.lastName = lastName;
-    }
-
     public String getFirstName() {
         return firstName;
     }

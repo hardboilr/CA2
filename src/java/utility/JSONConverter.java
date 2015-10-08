@@ -22,10 +22,6 @@ public class JSONConverter {
     }
 
     public static Person getPersonFromJson(String js) {
-        System.out.println(js);
-        Person person = gson.fromJson(js, Person.class);
-        return person;
-        /*
         Person person = new Person();
         JsonObject jo = gson.fromJson(js, JsonObject.class);
 
@@ -40,7 +36,7 @@ public class JSONConverter {
 
         CityInfo city = new CityInfo();
         city.setCity(jo.get("city").getAsString());
-        city.setZipCode(jo.get("zipcode").getAsInt());
+        city.setZipCode(jo.get("zipCode").getAsInt());
         city.addAddress(address);
 
         JsonArray phones = jo.get("phones").getAsJsonArray();
@@ -60,9 +56,7 @@ public class JSONConverter {
         for (JsonObject hobbyJsonObject1 : hobbyJsonObject) {
             person.addHobby(new Hobby(hobbyJsonObject1.get("name").getAsString(), hobbyJsonObject1.get("description").getAsString()));
         }
-
         return person;
-        */
     }
 
     public static String getJSONFromPerson(Person person) {
@@ -74,7 +68,7 @@ public class JSONConverter {
         joPerson.addProperty("street", person.getAddress().getStreet());
         joPerson.addProperty("additionalInfo", person.getAddress().getAdditionalInfo());
         joPerson.addProperty("city", person.getAddress().getCityInfo().getCity());
-        joPerson.addProperty("zipcode", person.getAddress().getCityInfo().getZipCode());
+        joPerson.addProperty("zipCode", person.getAddress().getCityInfo().getZipCode());
         JsonArray jaPhone = new JsonArray();
         for (Phone phone : person.getPhones()) {
             JsonObject jso = new JsonObject();
@@ -91,6 +85,7 @@ public class JSONConverter {
             jaHobby.add(jso);
         }
         joPerson.add("hobbies", jaHobby);
+        System.out.println(joPerson.toString());
         return gson.toJson(joPerson);
     }
 
