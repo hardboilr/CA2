@@ -6,6 +6,7 @@ import entities.Hobby;
 import entities.Person;
 import entities.Phone;
 import exception.PersonNotFoundException;
+import exception.PhoneExistException;
 import facade.PersonFacade;
 import javax.persistence.Persistence;
 import org.junit.After;
@@ -86,7 +87,7 @@ public class PersonFacadeTest {
     }
 
     @Test
-    public void testCreatePerson() throws PersonNotFoundException {
+    public void testCreatePerson() throws PersonNotFoundException, PhoneExistException {
         Hobby hobby = new Hobby("Programming3", "Software Development");
         Phone phone = new Phone("12345678", "Mobil");
         Address address = new Address("asdfsa", "asdf");

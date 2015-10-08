@@ -204,7 +204,7 @@ public class PersonFacade implements IPersonFacade {
     public List<Person> getAllPersons() {
         EntityManager em = getEntityManager();
         try {
-            Query query = em.createQuery("SELECT p FROM Person p").setMaxResults(50);
+            Query query = em.createQuery("SELECT p FROM Person p");
             return query.getResultList();
         } finally {
             em.close();

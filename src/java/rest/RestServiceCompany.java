@@ -41,7 +41,6 @@ public class RestServiceCompany {
     public RestServiceCompany() {
     }
 
-    /*OK*/
     @GET
     @Path("/complete")
     @Produces("application/json")
@@ -50,7 +49,6 @@ public class RestServiceCompany {
         return Response.ok(JSONConverter.getJSONFromCompany(companies)).build();
     }
 
-    /*OK*/
     @GET
     @Path("{cvr}")
     @Produces("application/json")

@@ -3,13 +3,21 @@ package test;
 import static com.jayway.restassured.RestAssured.basePath;
 import static com.jayway.restassured.RestAssured.baseURI;
 import static com.jayway.restassured.RestAssured.defaultParser;
+import static com.jayway.restassured.RestAssured.given;
 import static com.jayway.restassured.RestAssured.when;
+import static com.jayway.restassured.http.ContentType.JSON;
 import com.jayway.restassured.parsing.Parser;
+import entities.Address;
+import entities.CityInfo;
+import entities.Company;
+import entities.Person;
+import entities.Phone;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItems;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.BeforeClass;
+import utility.JSONConverter;
 
 public class RestApiPersonTest {
 
@@ -23,59 +31,62 @@ public class RestApiPersonTest {
         basePath = "/CA2/api/person";
     }
 
-    /*
-     JSON example-1
-     {
-     "firstName": "xxx",
-     "lastName" : "xxx",
-     "email" : "xxx",
-     "phones": [{"number":"xx","description":"xx"},{"number":"xx","description":"xx"},..]
-     "street": "xxxx",
-     "additionalInfo" : "xxxx",
-     "zipcode": "nnnn",
-     "city" : "xxxx"
-     }
-     */
-    @Test
-    public void testGetAll() {
+    @Test //PASSED
+    public void testGetComplete() {
         when().
-                get("complete").
+                get("/complete").
                 then().
-                statusCode(200).body("firstName", hasItems("Christine", "Tis"));
+                statusCode(200).body("id", hasItems(1, 2, 999, 1000)).
+                body("firstName", hasItems("Willie", "Gerald", "Lisa", "Wayne", "Adam")).
+                body("lastName", hasItems("Kennedy", "Ward", "Bailey", "Johnston", "Larson")).
+                body("email", hasItems("nlarsonl2@yelp.com", "ljamescw@fc2.com", "nreynoldsar@typepad.com", "sarnold7o@guardian.co.uk", "jpierce5b@edublogs.org")).
+                body("phones.number[0]", hasItems("27038971", "50206142", "66575394")). //get first phone number (JsonPath)
+                body("phones.number[-1]", hasItems("14572726", "16216755", "86001486")). //get last phone number (JsonPath)
+                body("hobbies.name[0]", hasItems("grand theft auto", "mushroom hunting", "soapmaking")). //get first phone number (JsonPath)
+                body("hobbies.name[-1]", hasItems("geocaching", "grand theft auto", "sewing")).
+                body("street", hasItems("680 Park Meadow Place"));
     }
 
-    @Test
-    public void testGet() {
+    @Test //PASSED
+    public void testGetPerson() {
         when().
-                get("complete/1").
+                get("get/27038971"). //id 1
                 then().
                 statusCode(200).body("firstName", equalTo("Christine")).
                 body("lastName", equalTo("Thomas")).
                 body("email", equalTo("cthomas0@live.com")).
-                body("phones.number", hasItems(50206142, 27038971, 66575394)).
+                body("phones.number", hasItems("27038971", "50206142", "66575394")).
+                body("hobbies.name", hasItems("grand theft auto", "mushroom hunting", "soapmaking")).
                 body("street", equalTo("5 Bellgrove Trail"));
-
         when().
-                get("complete/1000").
+                get("get/14572726"). //id 1000
                 then().
                 statusCode(200).body("firstName", equalTo("Willie")).
                 body("lastName", equalTo("Simpson")).
                 body("email", equalTo("wsimpsonrr@eepurl.com")).
-                body("phones.number", hasItems(14572726, 16216755, 86001486)).
+                body("phones.number", hasItems("14572726", "16216755", "86001486")).
+                body("hobbies.name", hasItems("geocaching", "grand theft auto", "sewing")).
                 body("street", equalTo("680 Park Meadow Place"));
     }
 
-    /*
-     {
-     "id":1,
-     "name": "Lars Mortensen",
-     "email":"lam@lam.dk",
-     "phones": [{"number":"xx","description":"xx"},{"number":"xx","description":"xx"},..]
-     }
-     */
     @Test
-    public void testGetContactInfo() {
+    public void createPerson() {
+        Person p = new Person("Tobias", "Jacobsen", "tobias.cbs@gmail.com");
+        Phone phone1 = new Phone("31203083", "iphone");
+        Phone phone2 = new Phone("29654310", "stationary");
+        p.addPhone(phone1);
+        p.addPhone(phone2);
+        CityInfo cityInfo = new CityInfo(2000, "Frederiksberg");
+        Address address = new Address("Smallegade 46A", "2. th.", cityInfo);
+        p.setAddress(address);
 
+        given().
+                contentType(JSON).
+                body(JSONConverter.getJSONFromPerson(p)).
+                when().
+                post().
+                then().
+                statusCode(201).body("firstName", equalTo(p.getFirstName()));
     }
 
 }

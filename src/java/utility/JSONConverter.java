@@ -131,7 +131,7 @@ public class JSONConverter {
     }
 
     public static Company getCompanyFromJson(String js) {
-        System.out.println(js);
+        System.out.println("jsonString: " + js);
         Company company = gson.fromJson(js, Company.class);
         return company;
     }
@@ -150,7 +150,7 @@ public class JSONConverter {
         jsonObject.addProperty("name", c.getName());
         jsonObject.addProperty("description", c.getDescription());
         jsonObject.addProperty("cvr", c.getCvr());
-        jsonObject.addProperty("NumEmployees", c.getNumEmployees());
+        jsonObject.addProperty("numEmployees", c.getNumEmployees());
         jsonObject.addProperty("marketValue", c.getMarketValue());
         JsonArray jsonArray = new JsonArray();
         for (Phone phone : c.getPhones()) {
@@ -186,7 +186,7 @@ public class JSONConverter {
             jsoCompany.addProperty("name", c.getName());
             jsoCompany.addProperty("description", c.getDescription());
             jsoCompany.addProperty("cvr", c.getCvr());
-            jsoCompany.addProperty("NumEmployees", c.getNumEmployees());
+            jsoCompany.addProperty("numEmployees", c.getNumEmployees());
             jsoCompany.addProperty("marketValue", c.getMarketValue());
             JsonArray jsoPhoneArray = new JsonArray();
             for (Phone phone : c.getPhones()) {
@@ -203,6 +203,6 @@ public class JSONConverter {
             jsoCompanyArray.add(jsoCompany);
         }
         jsoCompanies.add("companies", jsoCompanyArray);
-        return gson.toJson(jsoCompanies);
+        return gson.toJson(jsoCompanyArray);
     }
     }

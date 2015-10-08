@@ -41,11 +41,6 @@ public class RestServicePerson {
     public RestServicePerson() {
     }
 
-    /**
-     * Retrieves representation of an instance of rest.RestServicePerson
-     *
-     * @return an instance of java.lang.String
-     */
     @GET
     @Path("/complete")
     @Produces("application/json")
@@ -111,21 +106,6 @@ public class RestServicePerson {
     @Consumes("application/json")
     public Response createPerson(String person) throws PhoneExistException {
         Person p = JSONConverter.getPersonFromJson(person);
-        System.out.println(p.getEmail());
-        System.out.println(p.getFirstName());
-        System.out.println(p.getLastName());
-        System.out.println(p.getAddress().getStreet());
-        System.out.println(p.getAddress().getAdditionalInfo());
-        System.out.println(p.getAddress().getCityInfo().getCity());
-        System.out.println(p.getAddress().getCityInfo().getZipCode());
-        for (Phone phone : p.getPhones()) {
-            System.out.println(phone.getNumber());
-            System.out.println(phone.getDescription());
-        }
-        for (Hobby hobby : p.getHobbies()) {
-            System.out.println(hobby.getName());
-            System.out.println(hobby.getDescription());
-        }
         return Response.status(Response.Status.CREATED).entity(facade.createPerson(p)).build();
     }
 
