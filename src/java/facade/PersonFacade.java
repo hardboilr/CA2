@@ -44,11 +44,12 @@ public class PersonFacade implements IPersonFacade {
             }
         }
 
-        List<Hobby> hobbies = person.getHobbies();
         List<Hobby> hobs = new ArrayList();
         try {
-            for (Hobby hobby : hobbies) {
-                Hobby hob = em.find(Hobby.class, hobby.getName());
+            for (Hobby hobby : person.getHobbies()) {
+                System.out.println("Hobby name is: " + hobby.getName());
+                Hobby hob = new Hobby();
+                hob = em.find(Hobby.class, hobby.getName());
                 if (hob != null) {
                     hobs.add(hob);
                 } else {
@@ -124,8 +125,8 @@ public class PersonFacade implements IPersonFacade {
             if (ci != null) {
                 person.getAddress().setCityInfo(ci);
             }
-            
-                        Address ad = em.find(Address.class, edited.getAddress().getStreet());
+
+            Address ad = em.find(Address.class, edited.getAddress().getStreet());
             if (ad != null) {
                 person.setAddress(ad);
             }

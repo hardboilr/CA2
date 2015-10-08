@@ -22,6 +22,10 @@ public class JSONConverter {
     }
 
     public static Person getPersonFromJson(String js) {
+        System.out.println(js);
+        Person person = gson.fromJson(js, Person.class);
+        return person;
+        /*
         Person person = new Person();
         JsonObject jo = gson.fromJson(js, JsonObject.class);
 
@@ -58,6 +62,7 @@ public class JSONConverter {
         }
 
         return person;
+        */
     }
 
     public static String getJSONFromPerson(Person person) {

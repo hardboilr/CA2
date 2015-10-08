@@ -103,7 +103,7 @@ public class RestServicePerson {
     public Response createPerson(String person) {
         Person p = JSONConverter.getPersonFromJson(person);
         try {
-            return Response.status(Response.Status.CREATED).entity(facade.createPerson(p)).build();
+            return Response.status(Response.Status.CREATED).entity(JSONConverter.getJSONFromPerson(facade.createPerson(p))).build();
         } catch (PhoneExistException ex) {
             return Response.status(Response.Status.FORBIDDEN).build();
         }
