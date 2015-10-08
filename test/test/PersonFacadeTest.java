@@ -1,5 +1,6 @@
 package test;
 
+import deploy.DeploymentConfiguration;
 import entities.Address;
 import entities.CityInfo;
 import entities.Hobby;
@@ -8,6 +9,8 @@ import entities.Phone;
 import exception.PersonNotFoundException;
 import exception.PhoneExistException;
 import facade.PersonFacade;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.persistence.Persistence;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -18,7 +21,7 @@ import org.junit.Test;
 
 public class PersonFacadeTest {
 
-    PersonFacade pf = new PersonFacade(Persistence.createEntityManagerFactory("CA2PU"));
+    PersonFacade pf = new PersonFacade(Persistence.createEntityManagerFactory("pu_test"));
 
     public PersonFacadeTest() {
     }
@@ -33,53 +36,6 @@ public class PersonFacadeTest {
 
     @Before
     public void setUp() {
-//        EntityManager em = pf.getEntityManager();
-//        try {
-//            Hobby hobby1 = new Hobby("Programming", "Software Development");
-//            Phone phone1 = new Phone("51887460", "Mobil");
-//            Address address1 = new Address("Lombardigade", "14 1 tv");
-//            CityInfo cityInfo1 = new CityInfo(2300, "Kbh S");
-//            address1.setCity(cityInfo1);
-//
-//            Person person1 = new Person("Sebastian", "Nielsen");
-//            person1.addHobby(hobby1);
-//            person1.setEmail("sebnielsen@hotmail.com");
-//            person1.addPhone(phone1);
-//            person1.setAddress(address1);
-//
-//            Hobby hobby2 = new Hobby("Programming1", "Software Development");
-//            Phone phone2 = new Phone("53555358", "Mobil");
-//            Address address2 = new Address("Grymersvej", "3");
-//            CityInfo cityInfo2 = new CityInfo(3650, "Ølstykke");
-//            address2.setCity(cityInfo2);
-//
-//            Person person2 = new Person("Jonas", "Rafn");
-//            person2.addHobby(hobby2);
-//            person2.setEmail("jonaschrafn@gmail.com");
-//            person2.addPhone(phone2);
-//            person2.setAddress(address2);
-//
-//            Hobby hobby3 = new Hobby("Programming2", "Software Development");
-//            Phone phone3 = new Phone("31451231", "Mobil");
-//            Address address3 = new Address("Frederiksberg Alle", "45 3 th");
-//            CityInfo cityInfo3 = new CityInfo(1820, "Frederiksberg C");
-//            address3.setCity(cityInfo3);
-//
-//            Person person3 = new Person("Tobias", "Jacobsen");
-//            person1.addHobby(hobby3);
-//            person1.setEmail("tobias@hotmail.com");
-//            person1.addPhone(phone3);
-//            person1.setAddress(address3);
-//
-//            em.getTransaction().begin();
-////            em.createQuery("DELETE FROM InfoEntity").executeUpdate();
-//            em.persist(person1);
-//            em.persist(person2);
-//            em.persist(person3);
-//            em.getTransaction().commit();
-//        } finally {
-//            em.close();
-//        }
     }
 
     @After
@@ -87,33 +43,87 @@ public class PersonFacadeTest {
     }
 
     @Test
-    public void testCreatePerson() throws PersonNotFoundException, PhoneExistException {
-        Hobby hobby = new Hobby("Programming3", "Software Development");
-        Phone phone = new Phone("12345678", "Mobil");
-        Address address = new Address("asdfsa", "asdf");
-        CityInfo cityinfo = new CityInfo(3412, "gdasfg");
+    public void testCreateGetPerson() throws PhoneExistException {
+        Hobby hobby = new Hobby("programming", "software development");
+        Phone phone = new Phone("53555358", "Mobil");
+        Address address = new Address("233 Oxford street", "3. tv");
+        CityInfo cityinfo = new CityInfo(2800, "Lyngby");
         address.setCityInfo(cityinfo);
 
         Person person = new Person("Henrik", "Knudsen");
         person.addHobby(hobby);
-        person.setEmail("Knud@Knudsen.dk");
+        person.setEmail("Henrik@Knudsen.dk");
         person.addPhone(phone);
         person.setAddress(address);
 
         pf.createPerson(person);
 
-        Person p = pf.getPerson("12345678");
+        Person p = null;
+        try {
+            p = pf.getPerson("53555358");
+        } catch (PersonNotFoundException ex) {
+            Logger.getLogger(PersonFacadeTest.class.getName()).log(Level.SEVERE, null, ex);
+        }
         assertEquals(person.getFirstName(), p.getFirstName());
     }
 
     @Test
     public void testEditPerson() throws PersonNotFoundException {
-        Person p = pf.getPerson("12345678");
+        Hobby hobby = new Hobby("programming", "software development");
+        Phone phone = new Phone("53555359", "Mobil");
+        Address address = new Address("233 Oxford street", "3. tv");
+        CityInfo cityinfo = new CityInfo(2800, "Lyngby");
+        address.setCityInfo(cityinfo);
+
+        Person person = new Person("Henrik", "Knudsen");
+        person.addHobby(hobby);
+        person.setEmail("Henrik@Knudsen.dk");
+        person.addPhone(phone);
+        person.setAddress(address);
+
+        try {
+            pf.createPerson(person);
+        } catch (PhoneExistException ex) {
+            Logger.getLogger(PersonFacadeTest.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        Person p = pf.getPerson("53555359");
         p.setFirstName("Knud");
 
-        pf.editPerson(p, "12345678");
+        pf.editPerson(p, "53555359");
 
-        p = pf.getPerson("12345678");
+        p = pf.getPerson("53555359");
         assertEquals(p.getFirstName(), "Knud");
     }
+
+    @Test
+    public void testDeletePerson() {
+        Hobby hobby = new Hobby("programming", "software development");
+        Phone phone = new Phone("53555357", "Mobil");
+        Address address = new Address("233 Oxford street", "3. tv");
+        CityInfo cityinfo = new CityInfo(2800, "Lyngby");
+        address.setCityInfo(cityinfo);
+
+        Person person = new Person("Henrik", "Knudsen");
+        person.addHobby(hobby);
+        person.setEmail("Henrik@Knudsen.dk");
+        person.addPhone(phone);
+        person.setAddress(address);
+
+        try {
+            pf.createPerson(person);
+        } catch (PhoneExistException ex) {
+            Logger.getLogger(PersonFacadeTest.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        try {
+            Person p = pf.getPerson("53555357");
+            pf.deletePerson(p.getId());
+        } catch (PersonNotFoundException ex) {
+            Logger.getLogger(PersonFacadeTest.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        assertEquals(2, pf.getAllPersons().size());
+    }
+
 }

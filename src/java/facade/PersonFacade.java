@@ -27,22 +27,23 @@ public class PersonFacade implements IPersonFacade {
     }
 
     /**
-     * Create a person, returns nothing.
+     * Create a person, returns Person.
      *
      * @param person
-     * @return
+     * @return Person
+     * @throws exception.PhoneExistException
      */
     @Override
     public Person createPerson(Person person) throws PhoneExistException {
         EntityManager em = getEntityManager();
-        
+
         for (Phone phone : person.getPhones()) {
             Phone p = em.find(Phone.class, phone.getNumber());
             if (p != null) {
                 throw new PhoneExistException();
             }
         }
-        
+
         List<Hobby> hobbies = person.getHobbies();
         List<Hobby> hobs = new ArrayList();
         try {
@@ -55,17 +56,17 @@ public class PersonFacade implements IPersonFacade {
                 }
             }
             person.setHobbies(hobs);
-            
+
             Address ad = em.find(Address.class, person.getAddress().getStreet());
-            if(ad != null) {
+            if (ad != null) {
                 person.setAddress(ad);
             }
-            
+
             CityInfo ci = em.find(CityInfo.class, person.getAddress().getCityInfo().getZipCode());
-            if(ci != null) {
+            if (ci != null) {
                 person.getAddress().setCityInfo(ci);
-            } 
-            
+            }
+
             em.getTransaction().begin();
             em.persist(person);
             em.getTransaction().commit();
@@ -103,19 +104,32 @@ public class PersonFacade implements IPersonFacade {
      * Edit a person, returns nothing
      *
      * @param person
-     * @param phone
+     * @param phoneNumber
      * @return
      * @throws PersonNotFoundException
      */
     @Override
-    public Person editPerson(Person person, String phone) throws PersonNotFoundException {
+    public Person editPerson(Person person, String phoneNumber) throws PersonNotFoundException {
         EntityManager em = getEntityManager();
+        Phone phone = new Phone();
+        phone.setNumber(phoneNumber);
         try {
             Query query = em.createQuery("SELECT p FROM Person p WHERE :phone MEMBER OF p.phones", Person.class).setParameter("phone", phone);
             Person edited = (Person) query.getSingleResult();
             if (edited == null) {
                 throw new PersonNotFoundException("Requested person not found!");
             }
+
+            CityInfo ci = em.find(CityInfo.class, edited.getAddress().getCityInfo().getZipCode());
+            if (ci != null) {
+                person.getAddress().setCityInfo(ci);
+            }
+            
+                        Address ad = em.find(Address.class, edited.getAddress().getStreet());
+            if (ad != null) {
+                person.setAddress(ad);
+            }
+
             em.getTransaction().begin();
             edited.setAddress(person.getAddress());
             edited.setEmail(person.getEmail());
