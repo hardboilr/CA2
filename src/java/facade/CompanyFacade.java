@@ -77,18 +77,31 @@ public class CompanyFacade implements ICompanyFacade {
     }
 
     @Override
-    public List<Company> getCompaniesWithEmployeeCount(Long empCount) throws Exception {
+    public List<Company> getCompaniesValuedMoreThan(Long value) throws Exception {
+        EntityManager em = getEntityManager();
+        try {
+            Query query = em.createQuery("SELECT c FROM Company c WHERE c.marketValue > :value").setParameter("value", value);
+            List<Company> cList = query.getResultList();
+            if (cList == null) {
+                throw new Exception("fuck dig")/*throw new CompanyNotFoundException("No companies found with more than " + empCount + "employees")*/;
+            }
+            return cList;
+        } finally {
+            em.close();
+        }
+    }
+
+    @Override
+    public List<Company> getCompaniesWithEmployeeCount(Long empCount) throws CompanyNotFoundException {
         EntityManager em = getEntityManager();
         try {
             Query query = em.createQuery("SELECT c FROM Company c WHERE c.NumEmployees > :empCount").setParameter("empCount", empCount);
             List<Company> cList = query.getResultList();
-            if (cList == null) {
-                throw new Exception("fuck dig") /*CompanyNotFoundException("No companies found with more than " + empCount + "employees")*/;
+
+            if (cList.isEmpty() || cList == null) {
+                throw new CompanyNotFoundException("No companies found with more than " + empCount + " employees!");
             }
             return cList;
-
-        } catch (NoResultException e) {
-            throw new Exception("fuck dig") /*CompanyNotFoundException("No companies found with more than " + empCount + "employees")*/;
         } finally {
             em.close();
         }
@@ -134,4 +147,5 @@ public class CompanyFacade implements ICompanyFacade {
             em.close();
         }
     }
+
 }

@@ -6,6 +6,8 @@ import exception.CompanyNotFoundException;
 import facade.CompanyFacade;
 import interfaces.ICompanyFacade;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.ws.rs.core.Context;
@@ -57,24 +59,32 @@ public class RestServiceCompany {
             Company c = facade.getCompany(cvr);
             return Response.ok(JSONConverter.getJSONFromCompany(c)).build();
         } catch (CompanyNotFoundException ex) {
-            return Response.status(Response.Status.NOT_FOUND).build();
+            return Response.status(Response.Status.NOT_FOUND).entity(ex.getMessage()).build();
         }
     }
     
     /*Not implemented*/
     @GET
-    @Path("marketvalue/{cvr}/{marketvalue}")
+    @Path("marketvalue/{marketvalue}")
     @Produces("application/json")
-    public Response getCompanyValuedMoreThan(@PathParam("cvr") long cvr, @PathParam("marketvalue") long marketvalue) {
-        return Response.status(Response.Status.NOT_IMPLEMENTED).build();
+    public Response getCompanyValuedMoreThan(@PathParam("marketvalue") long marketvalue) {
+        try{List<Company> companies = facade.getCompaniesValuedMoreThan(marketvalue);
+            return Response.ok(JSONConverter.getJSONFromCompany(companies)).build();
+            } catch (Exception ex){
+                return Response.ok(JSONConverter.getJSONFromString(ex.getMessage())).build();
+            }
     }
 
     /*Not implemented*/
     @GET
-    @Path("employees/{cvr}/{employees}")
+    @Path("employees/{employees}")
     @Produces("application/json")
-    public Response getCompanyMoreEmployeesThan(@PathParam("cvr") long cvr, @PathParam("employees") long employees) {
-        return Response.status(Response.Status.NOT_IMPLEMENTED).build();
+    public Response getCompanyMoreEmployeesThan(@PathParam("employees") long employees){
+            try{List<Company> companies = facade.getCompaniesWithEmployeeCount(employees);
+            return Response.ok(JSONConverter.getJSONFromCompany(companies)).build();
+            } catch(CompanyNotFoundException ex){
+                return Response.status(Response.Status.NOT_FOUND).entity(ex.getMessage()).build();
+            }
     }
 
     /*OK*/
@@ -93,7 +103,7 @@ public class RestServiceCompany {
         try {
             return Response.ok(JSONConverter.getJSONFromCompany(facade.editCompany(c))).build();
         } catch (CompanyNotFoundException ex) {
-            return Response.status(Response.Status.NOT_FOUND).build();
+            return Response.status(Response.Status.NOT_FOUND).entity(ex.getMessage()).build();
         }
     }
 
