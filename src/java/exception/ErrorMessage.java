@@ -5,27 +5,26 @@ import java.io.StringWriter;
 
 public class ErrorMessage {
 
-  public ErrorMessage(Throwable ex, int code,boolean debug) {
-    this.code = code;
-    this.message = ex.getMessage();
-    
-    if(debug){
-      StringWriter sw = new StringWriter();
-      ex.printStackTrace(new PrintWriter(sw));
-      this.stackTrace = sw.toString();
+    public ErrorMessage(Throwable ex, int code, boolean debug) {
+        this.code = code;
+        this.message = ex.getMessage();
+
+        if (debug) {
+            StringWriter sw = new StringWriter();
+            ex.printStackTrace(new PrintWriter(sw));
+            this.stackTrace = sw.toString();
+        }
     }
-  }
 
-  public String getMessage() {
-    return message;
-  }
+    public String getMessage() {
+        return message;
+    }
 
-  public void setMessage(String message) {
-    this.message = message;
-  }
+    public void setMessage(String message) {
+        this.message = message;
+    }
 
-  
-  private int code;
-  private String message;
-  private String stackTrace;
+    private int code;
+    private String message;
+    private String stackTrace;
 }

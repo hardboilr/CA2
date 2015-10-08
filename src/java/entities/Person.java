@@ -5,9 +5,6 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.Table;
 
 /**
  * @author sebastiannielsen
@@ -46,6 +43,7 @@ public class Person extends InfoEntity {
     }
 
     public void addHobby(Hobby hobby) {
+        hobby.addPerson(this);
         hobbies.add(hobby);
     }
 
@@ -55,5 +53,9 @@ public class Person extends InfoEntity {
 
     public void setHobbies(List<Hobby> hobbies) {
         this.hobbies = hobbies;
+    }
+    
+    public void clearHobbies() {
+        hobbies.clear();
     }
 }

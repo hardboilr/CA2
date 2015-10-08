@@ -8,7 +8,7 @@ package interfaces;
 import entities.CityInfo;
 import entities.Hobby;
 import entities.Person;
-//import exceptions.PersonNotFoundException;
+import exception.PersonNotFoundException;
 import java.util.List;
 
 /**
@@ -17,17 +17,19 @@ import java.util.List;
  */
 public interface IPersonFacade {
 
-    public void createPerson(Person person);
+    public Person createPerson(Person person);
 
-    public Person getPerson(String phone) throws Exception;
+    public Person getPerson(String phone) throws PersonNotFoundException;
 
-    public void editPerson(Person person, String phone) throws Exception;
+    public Person editPerson(Person person, String phone) throws PersonNotFoundException;
 
-    public void deletePerson(Person person) throws Exception;
+    public Person deletePerson(Long id) throws Exception;
 
-    public List<Person> getPersonsWithHobby(Hobby hobby) throws Exception;
+    public List<Person> getPersonsWithHobby(String hobby) throws PersonNotFoundException;
 
-    public List<Person> getPersonsInCity(CityInfo city) throws Exception;
+    public List<Person> getPersonsInCity(int zipcode) throws PersonNotFoundException;
 
-    public Long getPersonCountWithHobby(Hobby hobby);
+    public Long getPersonCountWithHobby(String hobby) throws PersonNotFoundException;
+
+    public List<Person> getAllPersons();
 }
