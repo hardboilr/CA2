@@ -12,15 +12,16 @@ import javax.persistence.OneToMany;
  */
 @Entity
 public class CityInfo implements Serializable {
+
     @Id
     private int zipCode;
-    
+
     private String city;
-    
-    @OneToMany(mappedBy="city")
+
+    @OneToMany(mappedBy = "city")
     private List<Address> addresses = new ArrayList();
-    
-    public CityInfo(){
+
+    public CityInfo() {
     }
 
     public CityInfo(int zipCode, String city) {
@@ -51,9 +52,9 @@ public class CityInfo implements Serializable {
     public void setAddresses(List<Address> addresses) {
         this.addresses = addresses;
     }
-    
-    
-    
-    
-    
+
+    public void addAddress(Address a) {
+        a.setCity(this);
+        addresses.add(a);
+    }
 }

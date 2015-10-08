@@ -1,16 +1,14 @@
 package facade;
 
-import deploy.DeploymentConfiguration;
 import entities.CityInfo;
-import entities.Company;
 import entities.Hobby;
 import entities.Person;
+import entities.Phone;
+import exception.PersonNotFoundException;
 import interfaces.IPersonFacade;
-//import exceptions.PersonNotFoundException;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 import javax.persistence.Query;
 
 public class PersonFacade implements IPersonFacade {
@@ -27,36 +25,50 @@ public class PersonFacade implements IPersonFacade {
 
     /**
      * Create a person, returns nothing.
-     * @param person 
+     *
+     * @param person
+     * @return
      */
     @Override
-    public void createPerson(Person person) {
+    public Person createPerson(Person person) {
         EntityManager em = getEntityManager();
         try {
+            CityInfo citydb = em.find(CityInfo.class, person.getAddress().getCity().getZipCode());
+            if (citydb != null) {
+                citydb.addAddress(person.getAddress());
+            }
+
+//            CityInfo city = em.find(CityInfo.class, person.getAddress().getCity());
+//            if (city == null) {
+//                person.getAddress
+//            }
             em.getTransaction().begin();
             em.persist(person);
             em.getTransaction().commit();
+            return person;
         } finally {
             em.close();
         }
     }
 
     /**
-     * Find a person using a phone number. 
-     * @param phone
+     * Find a person using a phone number.
+     *
+     * @param phoneNumber
      * @return Person
-     * @throws PersonNotFoundException 
+     * @throws PersonNotFoundException
      */
     @Override
-    public Person getPerson(String phone) throws Exception {
+    public Person getPerson(String phoneNumber) throws PersonNotFoundException {
         EntityManager em = getEntityManager();
+        Phone phone = new Phone();
+        phone.setNumber(phoneNumber);
         try {
-            Query query = em.createQuery("SELECT p FROM Person p WHERE :phone MEMBER OF p.phones").setParameter("phone", phone);
+            Query query = em.createQuery("SELECT p FROM Person p WHERE :phone MEMBER OF p.phones", Person.class).setParameter("phone", phone);
             Person p = (Person) query.getSingleResult();
             if (p == null) {
-                throw new Exception("No person with that phone number found!");
+                throw new PersonNotFoundException("No person with that phone number found!");
             }
-            System.out.println(p.getFirstName());
             return p;
         } finally {
             em.close();
@@ -65,18 +77,20 @@ public class PersonFacade implements IPersonFacade {
 
     /**
      * Edit a person, returns nothing
+     *
      * @param person
      * @param phone
-     * @throws PersonNotFoundException 
+     * @return
+     * @throws PersonNotFoundException
      */
     @Override
-    public void editPerson(Person person, String phone) throws Exception {
+    public Person editPerson(Person person, String phone) throws PersonNotFoundException {
         EntityManager em = getEntityManager();
         try {
-            Query query = em.createQuery("SELECT p FROM Person p WHERE :phone MEMBER OF p.phones").setParameter("phone", phone);
+            Query query = em.createQuery("SELECT p FROM Person p WHERE :phone MEMBER OF p.phones", Person.class).setParameter("phone", phone);
             Person edited = (Person) query.getSingleResult();
             if (edited == null) {
-                throw new Exception("Requested person not found!");
+                throw new PersonNotFoundException("Requested person not found!");
             }
             em.getTransaction().begin();
             edited.setAddress(person.getAddress());
@@ -86,42 +100,45 @@ public class PersonFacade implements IPersonFacade {
             edited.setLastName(person.getLastName());
             edited.setPhones(person.getPhones());
             em.getTransaction().commit();
+            return person;
+
         } finally {
             em.close();
         }
-
     }
 
     /**
-     * 
-     * @param person
-     * @throws PersonNotFoundException 
+     *
+     * @param id
+     * @return
+     * @throws PersonNotFoundException
      */
     @Override
-    public void deletePerson(Person person) throws Exception {
+    public Person deletePerson(Long id) throws PersonNotFoundException {
         EntityManager em = getEntityManager();
         try {
-            Person p = em.find(Person.class, person);
+            Person p = em.find(Person.class, id);
             if (p == null) {
-                throw new Exception("Requested person not found!");
+                throw new PersonNotFoundException("Requested person not found!");
             }
             em.getTransaction().begin();
             em.remove(p);
             em.getTransaction().commit();
+            return p;
         } finally {
             em.close();
         }
-
     }
 
     @Override
-    public List<Person> getPersonsWithHobby(Hobby hobby) throws Exception {
+    public List<Person> getPersonsWithHobby(String hobby) throws PersonNotFoundException {
         EntityManager em = getEntityManager();
+        Hobby hobbydb = em.find(Hobby.class, hobby);
         try {
-            Query query = em.createQuery("SELECT p FROM Person p WHERE :hobby MEMBER OF p.hobbies ").setParameter("hobby", hobby);
+            Query query = em.createQuery("SELECT p FROM Person p WHERE :hobby MEMBER OF p.hobbies ").setParameter("hobby", hobbydb);
             List<Person> pList = query.getResultList();
             if (pList == null) {
-                throw new Exception("No persons found with that hobby!");
+                throw new PersonNotFoundException("No persons found with that hobby!");
             }
             return pList;
         } finally {
@@ -131,13 +148,14 @@ public class PersonFacade implements IPersonFacade {
     }
 
     @Override
-    public List<Person> getPersonsInCity(CityInfo city) throws Exception {
+    public List<Person> getPersonsInCity(int zipcode) throws PersonNotFoundException {
         EntityManager em = getEntityManager();
+        CityInfo city = em.find(CityInfo.class, zipcode);
         try {
             Query query = em.createQuery("SELECT p FROM Person p WHERE p.address.city=:city").setParameter("city", city);
             List<Person> pList = query.getResultList();
             if (pList == null) {
-                throw new Exception("No persons found in that city!");
+                throw new PersonNotFoundException("No persons found in that city!");
             }
             return pList;
 
@@ -147,33 +165,25 @@ public class PersonFacade implements IPersonFacade {
     }
 
     @Override
-    public Long getPersonCountWithHobby(Hobby hobby) {
+    public Long getPersonCountWithHobby(String hobby) {
         EntityManager em = getEntityManager();
+        Hobby hobbydb = em.find(Hobby.class, hobby);
         try {
-            Query query = em.createQuery("SELECT COUNT(p.id) FROM Person p WHERE :hobby MEMBER OF p.hobbies").setParameter("hobby", hobby);
+            Query query = em.createQuery("SELECT COUNT(p.id) FROM Person p WHERE :hobby MEMBER OF p.hobbies").setParameter("hobby", hobbydb);
             return (Long) query.getSingleResult();
         } finally {
             em.close();
         }
     }
 
-//-------------------------------------------------------------------------------------------------------------------
-//-------------------------------------------------------------------------------------------------------------------
-    public List<CityInfo> getZipCodes() {
+    @Override
+    public List<Person> getAllPersons() {
         EntityManager em = getEntityManager();
-        Query query = em.createQuery("SELECT c FROM CityInfo c");
-        return query.getResultList();
-    }
-
-    public List<Company> getCompaniesWithEmployeeCount(Long empCount) {
-        EntityManager em = getEntityManager();
-        Query query = em.createQuery("SELECT c FROM Company c WHERE c.NumEmployees > :empCount").setParameter("empCount", empCount);
-        return query.getResultList();
-    }
-
-    public Company getCompany(Company company) {
-        EntityManager em = getEntityManager();
-        Query query = em.createQuery("SELECT c FROM Company c WHERE c.cvr=:cvr OR :phones MEMBER OF c.phones").setParameter("cvr", company.getCvr()).setParameter("phones", company.getPhones());
-        return (Company) query.getSingleResult();
+        try {
+            Query query = em.createQuery("SELECT p FROM Person p").setMaxResults(50);
+            return query.getResultList();
+        } finally {
+            em.close();
+        }
     }
 }

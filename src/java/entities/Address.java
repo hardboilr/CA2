@@ -60,6 +60,11 @@ public class Address implements Serializable {
     public List<InfoEntity> getInfoEntities() {
         return infoEntities;
     }
+    
+    public void addInfoEntity(InfoEntity ie) {
+        ie.setAddress(this);
+        infoEntities.add(ie);
+    }
 
     public CityInfo getCity() {
         return city;
@@ -68,4 +73,6 @@ public class Address implements Serializable {
     public void setCity(CityInfo city) {
         this.city = city;
     }
+    
+  
 }
