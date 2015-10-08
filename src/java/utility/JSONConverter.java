@@ -205,4 +205,8 @@ public class JSONConverter {
         jsoCompanies.add("companies", jsoCompanyArray);
         return gson.toJson(jsoCompanies);
     }
+    
+    public static String getJSONFromString(String message){
+        return gson.toJson(message);
+    }
 }

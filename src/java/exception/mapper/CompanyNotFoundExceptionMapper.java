@@ -2,11 +2,12 @@ package exception.mapper;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import exception.CompanyNotFoundException;
+import java.util.Arrays;
 import exception.ErrorMessage;
 import javax.servlet.ServletContext;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
@@ -21,8 +22,12 @@ public class CompanyNotFoundExceptionMapper implements ExceptionMapper<CompanyNo
 
     @Override
     public Response toResponse(CompanyNotFoundException e) {
-        boolean isDebug = context.getInitParameter("debug").toLowerCase().equals("true");
-        ErrorMessage em = new ErrorMessage(e, Response.Status.NOT_FOUND.getStatusCode(), isDebug);
-        return Response.status(Response.Status.NOT_FOUND).entity(gson.toJson(em)).type(MediaType.APPLICATION_JSON).build();
+        JsonObject jo = new JsonObject();
+        if(Boolean.valueOf(context.getInitParameter("debug"))){
+            jo.addProperty("StackTrace", Arrays.toString(e.getStackTrace()));
+        }
+        jo.addProperty("Message", e.getMessage());
+        return Response.status(Response.Status.NOT_FOUND).entity(jo.toString()).build();
+        
     }
 }
