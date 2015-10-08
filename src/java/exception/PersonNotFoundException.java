@@ -1,9 +1,5 @@
 package exception;
 
-/**
- *
- * @author plaul1
- */
 public class PersonNotFoundException extends Exception {
 
     public PersonNotFoundException(String string) {
@@ -13,5 +9,4 @@ public class PersonNotFoundException extends Exception {
     public PersonNotFoundException() {
         super("Person with requested id not found");
     }
-
 }

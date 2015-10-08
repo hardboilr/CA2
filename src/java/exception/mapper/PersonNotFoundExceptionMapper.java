@@ -1,8 +1,10 @@
-//package exceptions;
+//package exception.mapper;
 //
 //import com.google.gson.Gson;
 //import com.google.gson.GsonBuilder;
 //import exception.ErrorMessage;
+//import exception.ErrorMessage;
+//import exceptions.PersonNotFoundException;
 //import javax.servlet.ServletContext;
 //import javax.ws.rs.core.Context;
 //import javax.ws.rs.core.MediaType;

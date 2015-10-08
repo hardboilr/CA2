@@ -1,24 +1,15 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package facade;
 
 import entities.CityInfo;
 import entities.Company;
 import exception.CompanyNotFoundException;
-//import exception.CompanyNotFoundException;
 import interfaces.ICompanyFacade;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
-/**
- *
- * @author sebastiannielsen
- */
 public class CompanyFacade implements ICompanyFacade {
 
     private EntityManagerFactory emf;
@@ -45,15 +36,14 @@ public class CompanyFacade implements ICompanyFacade {
     }
 
     @Override
-    public Company getCompany(long cvr) throws Exception {
+    public Company getCompany(long cvr) throws CompanyNotFoundException {
         EntityManager em = getEntityManager();
         try {
-            Query query = em.createQuery("SELECT c FROM Company c WHERE c.cvr=:cvr").setParameter("cvr", cvr);
+            Query query = em.createQuery("SELECT c FROM Company c WHERE c.cvr=:input").setParameter("input", cvr);
             Company c = (Company) query.getSingleResult();
-            if (c == null) {
-                throw new Exception("No Company found with provided cvr");
-            }
             return c;
+        } catch (NoResultException e) {
+            throw new CompanyNotFoundException("No Company found with provided cvr");
         } finally {
             em.close();
         }
@@ -64,13 +54,12 @@ public class CompanyFacade implements ICompanyFacade {
         EntityManager em = getEntityManager();
         try {
             List<Company> companies = em.createQuery("select c from Company c").getResultList();
-            System.out.println("Companies size is: " + companies.size());
             return companies;
         } finally {
             em.close();
         }
     }
-    
+
     @Override
     public List<Company> getCompaniesInCity(CityInfo city) throws Exception {
         EntityManager em = getEntityManager();
@@ -86,7 +75,7 @@ public class CompanyFacade implements ICompanyFacade {
             em.close();
         }
     }
-    
+
     @Override
     public List<Company> getCompaniesWithEmployeeCount(Long empCount) throws Exception {
         EntityManager em = getEntityManager();
@@ -98,21 +87,19 @@ public class CompanyFacade implements ICompanyFacade {
             }
             return cList;
 
+        } catch (NoResultException e) {
+            throw new Exception("fuck dig") /*CompanyNotFoundException("No companies found with more than " + empCount + "employees")*/;
         } finally {
             em.close();
         }
-        
     }
 
     @Override
-    public Company editCompany(Company c) throws Exception {
+    public Company editCompany(Company c) throws CompanyNotFoundException {
         EntityManager em = getEntityManager();
         try {
             Query query = em.createQuery("SELECT c FROM Company c WHERE c.cvr=:cvr").setParameter("cvr", c.getCvr());
             Company edited = (Company) query.getSingleResult();
-            if (edited == null) {
-                throw new Exception("fuck dig") /*CompanyNotFoundException("No Company found with provided cvr")*/;
-            }
             edited.setCvr(c.getCvr());
             edited.setName(c.getName());
             edited.setDescription(c.getDescription());
@@ -124,27 +111,27 @@ public class CompanyFacade implements ICompanyFacade {
             em.merge(edited);
             em.getTransaction().commit();
             return edited;
+        } catch (NoResultException e) {
+            throw new CompanyNotFoundException("No Company found");
         } finally {
             em.close();
         }
     }
 
     @Override
-    public Company deleteCompany(long cvr) throws Exception {
+    public Company deleteCompany(long cvr) throws CompanyNotFoundException {
         EntityManager em = getEntityManager();
         try {
             Query query = em.createQuery("SELECT c FROM Company c WHERE c.cvr=:cvr").setParameter("cvr", cvr);
             Company c = (Company) query.getSingleResult();
-            if (c == null) {
-                throw new Exception("fuck dig") /*CompanyNotFoundException("No Company found with provided cvr")*/;
-            }
             em.getTransaction().begin();
             em.remove(c);
             em.getTransaction().commit();
             return c;
+        } catch (NoResultException e) {
+            throw new CompanyNotFoundException("No Company found with provided cvr");
         } finally {
             em.close();
         }
     }
-
 }

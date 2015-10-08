@@ -10,14 +10,16 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 public class FacadeTest {
-    
+
     private EntityManagerFactory emf = Persistence.createEntityManagerFactory(DeploymentConfiguration.PU_NAME);
     private EntityManager em = emf.createEntityManager();
     private ICompanyFacade compFacade = new CompanyFacade(emf);
+
     public String getString() {
         Company comp = null;
         try {
-            comp = compFacade.getCompany(53924216);
+//            comp = compFacade.getCompany(53924216);
+            comp = compFacade.getCompany(539242641);
         } catch (Exception ex) {
             Logger.getLogger(FacadeTest.class.getName()).log(Level.SEVERE, null, ex);
         }
