@@ -1,11 +1,8 @@
 package rest;
 
+import com.jayway.restassured.response.ResponseBody;
 import deploy.DeploymentConfiguration;
-import entities.Address;
-import entities.CityInfo;
-import entities.Hobby;
 import entities.Person;
-import entities.Phone;
 import exception.PersonNotFoundException;
 import exception.PhoneExistException;
 import facade.PersonFacade;
@@ -13,7 +10,6 @@ import interfaces.IPersonFacade;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.ws.rs.core.Context;
@@ -109,67 +105,34 @@ public class RestServicePerson {
 
     @POST
     @Consumes("application/json")
-    public Response createPerson(String person) throws PhoneExistException {
+    public Response createPerson(String person) {
         Person p = JSONConverter.getPersonFromJson(person);
-        System.out.println(p.getEmail());
-        System.out.println(p.getFirstName());
-        System.out.println(p.getLastName());
-        System.out.println(p.getAddress().getStreet());
-        System.out.println(p.getAddress().getAdditionalInfo());
-        System.out.println(p.getAddress().getCityInfo().getCity());
-        System.out.println(p.getAddress().getCityInfo().getZipCode());
-        for (Phone phone : p.getPhones()) {
-            System.out.println(phone.getNumber());
-            System.out.println(phone.getDescription());
+        try {
+            return Response.status(Response.Status.CREATED).entity(facade.createPerson(p)).build();
+        } catch (PhoneExistException ex) {
+            return Response.status(Response.Status.FORBIDDEN).build();
         }
-        for (Hobby hobby : p.getHobbies()) {
-            System.out.println(hobby.getName());
-            System.out.println(hobby.getDescription());
-        }
-        return Response.status(Response.Status.CREATED).entity(facade.createPerson(p)).build();
     }
 
     @PUT
-    @Path("{phone}")
+    @Path("/edit/{phone}")
     @Consumes("application/json")
     public Response editPerson(@PathParam("phone") String phone, String person) {
         Person p = JSONConverter.getPersonFromJson(person);
         try {
-            return Response.ok(facade.editPerson(p, phone)).build();
-        } catch (Exception ex) {
+            return Response.ok(facade.editPerson(p, p.getPhones().get(0).toString())).build();
+        } catch (PersonNotFoundException ex) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
     }
 
     @DELETE
-    @Path("{id}")
+    @Path("/delete/{id}")
     public Response deletePerson(@PathParam("id") long id) {
         try {
-            return Response.ok(facade.deletePerson(id)).build();
-        } catch (Exception ex) {
+            return Response.status(Response.Status.OK).entity(facade.deletePerson(id)).build();
+        } catch (PersonNotFoundException ex) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
-    }
-    
-    public static void main(String[] args) {
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory(DeploymentConfiguration.PU_NAME);
-        EntityManager em = emf.createEntityManager();
-        Person p = new Person();
-        p.setFirstName("Tobias");
-        p.setLastName("afsklj");
-        Address address = new Address();
-        address.setAdditionalInfo(("2.tv"));
-        address.setStreet("smallegade 46");
-        CityInfo ci = em.find(CityInfo.class, 2800);
-        address.setCityInfo(ci);
-        p.setAddress(address);
-        Phone phone = new Phone();
-        phone.setNumber("31203083");
-        p.addPhone(phone);
-        em.getTransaction().begin();
-        em.persist(p);
-        em.getTransaction().commit();
-        em.close();
-        
     }
 }

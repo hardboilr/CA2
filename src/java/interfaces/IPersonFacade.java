@@ -15,7 +15,7 @@ public interface IPersonFacade {
 
     public Person editPerson(Person person, String phone) throws PersonNotFoundException;
 
-    public Person deletePerson(Long id) throws Exception;
+    public Person deletePerson(Long id) throws PersonNotFoundException;
 
     public List<Person> getPersonsWithHobby(String hobby) throws PersonNotFoundException;
 
