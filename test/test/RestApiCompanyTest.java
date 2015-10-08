@@ -7,16 +7,17 @@ import static com.jayway.restassured.RestAssured.given;
 import static com.jayway.restassured.RestAssured.when;
 import static com.jayway.restassured.http.ContentType.JSON;
 import com.jayway.restassured.parsing.Parser;
+import entities.Address;
+import entities.CityInfo;
 import entities.Company;
+import entities.Phone;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItems;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.BeforeClass;
+import utility.JSONConverter;
 
-/**
- * @author Tobias Jacobsen
- */
 public class RestApiCompanyTest {
 
     public RestApiCompanyTest() {
@@ -29,60 +30,49 @@ public class RestApiCompanyTest {
         basePath = "/CA2/api/company";
     }
 
-    /*
-     JSON example-1
-     {
-     "name": "xxx",
-     "email" : "xxx",
-     "phones": [{"number":"xx","description":"xx"},{"number":"xx","description":"xx"},..]
-     "description":"xxx",
-     "cvr":"xxx",
-     "numEmployees:"xxx",
-     "marketValue":"xxx",
-     "street": "xxxx",
-     "additionalInfo" : "xxxx",
-     "zipcode": "nnnn",
-     "city" : "xxxx"
-     }
-     */
-    @Test
+    @Test //PASSED
     public void testGetComplete() {
         when().
-                get("complete/1001").
+                get("/complete").
                 then().
-                statusCode(200).body("name", equalTo("Youspan")).
-                body("email", equalTo("sphillips0@networkadvertising.org")).
-                body("phones.number", hasItems(98249125, 65603329, 90231555)).
-                body("cvr", equalTo(53924216));
+                statusCode(200).body("id", hasItems(1001, 1002, 1999, 2000)).
+                body("name", hasItems("Jaxnation", "Buzzdog", "Pixonyx", "Youspan", "Zoozzy")).
+                body("cvr", hasItems(53924216, 84030264, 90892298, 95344769, 78618755)).
+                body("phones.number[0]", hasItems("65603329", "90231555", "98249125")). //get first phone number (JsonPath)
+                body("phones.number[-1]", hasItems("10824582", "68963554", "84900360")). //get last phone number (JsonPath)
+                body("street", hasItems("9369 Fordem Drive"));
     }
 
-    /*
-     {  
-     'cvr':'xxx',
-     'name':'xxx',
-     'description':'xxx',
-     'NumEmployees':'xxx',
-     'marketValue':'xxx'
-     }
-     */
-    @Test
+    @Test //PASSED
     public void testGetCvr() {
         when().
-                get("cvr/78618755").
+                get("/94727634").
                 then().
-                statusCode(200).body("cvr", equalTo(78618755)).
-                body("name", equalTo("Jaxnation")).
-                body("description", equalTo("auctor sed tristique in tempus sit amet sem")).
-                body("numEmployees", equalTo(7849)).
-                body("marketValue", equalTo(79612098));
+                statusCode(200).body("cvr", equalTo(94727634)).
+                body("name", equalTo("Zoomcast")).
+                body("description", equalTo("sapien iaculis congue vivamus metus arcu")).
+                body("numEmployees", equalTo(24226)).
+                body("street", equalTo("803 Garrison Place")).
+                body("additionalInfo", equalTo("st.tv")).
+                body("zipCode", equalTo(2690)).
+                body("city", equalTo("Karlslunde"));
     }
 
-    @Test
+//    @Test //wait for facade implementation
     public void testCreateCompany() {
         Company c = new Company(31203083l, "Tobias Company", "The bestest company", 1, 1000000l);
+        Phone phone1 = new Phone("31203083", "iphone");
+        Phone phone2 = new Phone("29654310", "stationary");
+        c.addPhone(phone1);
+        c.addPhone(phone2);
+        CityInfo cityInfo = new CityInfo(2000, "Frederiksberg");
+        Address address = new Address("Smallegade 46A", "2. th.", cityInfo);
+        c.setAddress(address);
+        c.setEmail("tobias.cbs@gmail.com");
+
         given().
                 contentType(JSON).
-                body(c).
+                body(JSONConverter.getJSONFromCompany(c)).
                 when().
                 post().
                 then().
@@ -90,12 +80,22 @@ public class RestApiCompanyTest {
                 body("name", equalTo(c.getName()));
     }
 
-    @Test
+//    @Test //wait for facade implementation
     public void testUpdateCompany() {
         Company c = new Company(31203083l, "Tobias Company", "The bestest company", 1, 1000000l);
+        c.setCvr(53924216);
+        Phone phone1 = new Phone("31203083", "iphone");
+        Phone phone2 = new Phone("29654310", "stationary");
+        c.addPhone(phone1);
+        c.addPhone(phone2);
+        CityInfo cityInfo = new CityInfo();
+        cityInfo.setZipCode(2000);
+        Address address = new Address("Smallegade 46A", "2. th.", cityInfo);
+        c.setAddress(address);
+        c.setEmail("tobias.cbs@gmail.com");
         given().
                 contentType(JSON).
-                body(c).
+                body(JSONConverter.getJSONFromCompany(c)).
                 when().
                 post().
                 then().
@@ -103,9 +103,8 @@ public class RestApiCompanyTest {
                 body("name", equalTo(c.getName()));
     }
 
-    @Test
+//    @Test //wait for facade implementation
     public void testDeleteCompany() {
-        Company c = new Company(31203083l, "Tobias Company", "The bestest company", 1, 1000000l);
         when().
                 delete("deletee/40544424").
                 then().

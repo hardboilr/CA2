@@ -37,6 +37,9 @@ public class InfoEntity implements Serializable {
         this.id = id;
         this.email = email;
     }
+    
+    public InfoEntity(String email) {
+    }
 
     public long getId() {
         return id;
