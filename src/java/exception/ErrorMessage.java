@@ -5,6 +5,10 @@ import java.io.StringWriter;
 
 public class ErrorMessage {
 
+    private int code;
+    private String message;
+    private String stackTrace;
+
     public ErrorMessage(Throwable ex, int code, boolean debug) {
         this.code = code;
         this.message = ex.getMessage();
@@ -23,8 +27,4 @@ public class ErrorMessage {
     public void setMessage(String message) {
         this.message = message;
     }
-
-    private int code;
-    private String message;
-    private String stackTrace;
 }

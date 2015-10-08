@@ -6,19 +6,16 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
-/**
- * @author sebastiannielsen
- */
 @Entity
 public class Phone implements Serializable {
 
-    @Id 
+    @Id
     private String number;
 
     private String description;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private InfoEntity infoEntity; 
+    private InfoEntity infoEntity;
 
     public Phone() {
     }

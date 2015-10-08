@@ -60,7 +60,7 @@ public class RestServiceCompany {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
     }
-    
+
     /*Not implemented*/
     @GET
     @Path("marketvalue/{cvr}/{marketvalue}")

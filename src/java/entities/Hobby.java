@@ -7,15 +7,12 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 
-/**
- * @author sebastiannielsen
- */
 @Entity
 public class Hobby implements Serializable {
 
-    @Id 
+    @Id
     private String name;
-    
+
     private String description;
 
     @ManyToMany(mappedBy = "hobbies")
@@ -56,6 +53,4 @@ public class Hobby implements Serializable {
     public void setPersons(List<Person> persons) {
         this.persons = persons;
     }
-    
-    
 }

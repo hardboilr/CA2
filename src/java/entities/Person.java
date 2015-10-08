@@ -6,9 +6,6 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
 
-/**
- * @author sebastiannielsen
- */
 @Entity
 public class Person extends InfoEntity {
 
@@ -54,7 +51,7 @@ public class Person extends InfoEntity {
     public void setHobbies(List<Hobby> hobbies) {
         this.hobbies = hobbies;
     }
-    
+
     public void clearHobbies() {
         hobbies.clear();
     }

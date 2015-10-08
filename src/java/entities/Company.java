@@ -2,19 +2,16 @@ package entities;
 
 import javax.persistence.Entity;
 
-/**
- * @author sebastiannielsen
- */
 @Entity
 public class Company extends InfoEntity {
-    
+
     private long cvr;
     private String name;
     private String description;
     private int NumEmployees;
     private long marketValue;
-    
-    public Company(){
+
+    public Company() {
     }
 
     public Company(long cvr, String name, String description, int NumEmployees, long marketValue) {
@@ -64,6 +61,4 @@ public class Company extends InfoEntity {
     public void setMarketValue(long marketValue) {
         this.marketValue = marketValue;
     }
-    
-    
 }

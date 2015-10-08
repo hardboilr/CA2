@@ -15,9 +15,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-/**
- * @author Tobias Jacobsen
- */
 public class PersonFacadeTest {
 
     PersonFacade pf = new PersonFacade(Persistence.createEntityManagerFactory("CA2PU"));

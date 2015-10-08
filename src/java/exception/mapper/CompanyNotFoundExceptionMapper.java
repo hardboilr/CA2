@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import exception.CompanyNotFoundException;
 import exception.ErrorMessage;
-import exception.ErrorMessage;
 import javax.servlet.ServletContext;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -26,5 +25,4 @@ public class CompanyNotFoundExceptionMapper implements ExceptionMapper<CompanyNo
         ErrorMessage em = new ErrorMessage(e, Response.Status.NOT_FOUND.getStatusCode(), isDebug);
         return Response.status(Response.Status.NOT_FOUND).entity(gson.toJson(em)).type(MediaType.APPLICATION_JSON).build();
     }
-
 }

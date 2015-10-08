@@ -9,5 +9,4 @@ public class CompanyNotFoundException extends Exception {
     public CompanyNotFoundException() {
         super("Company with requested cvr not found");
     }
-
 }

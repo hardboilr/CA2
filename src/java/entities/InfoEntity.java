@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package entities;
 
 import java.io.Serializable;
@@ -19,26 +14,23 @@ import javax.persistence.InheritanceType;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
-/**
- * @author sebastiannielsen
- */
 @Entity
-@Inheritance(strategy=InheritanceType.JOINED)
+@Inheritance(strategy = InheritanceType.JOINED)
 public class InfoEntity implements Serializable {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    
+
     private String email;
-    
-    @OneToMany(mappedBy="infoEntity", cascade = {CascadeType.REMOVE, CascadeType.PERSIST})
+
+    @OneToMany(mappedBy = "infoEntity", cascade = {CascadeType.REMOVE, CascadeType.PERSIST})
     private List<Phone> phones = new ArrayList();
-    
-    @ManyToOne(fetch=FetchType.LAZY, cascade = {CascadeType.DETACH, CascadeType.PERSIST})
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.DETACH, CascadeType.PERSIST})
     private Address address;
-    
-    public InfoEntity(){
+
+    public InfoEntity() {
     }
 
     public InfoEntity(long id, String email) {
@@ -82,6 +74,4 @@ public class InfoEntity implements Serializable {
     public void setPhones(List<Phone> phones) {
         this.phones = phones;
     }
-    
-    
 }

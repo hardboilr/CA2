@@ -7,9 +7,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
-/**
- * @author sebastiannielsen
- */
 @Entity
 public class CityInfo implements Serializable {
 

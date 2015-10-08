@@ -11,9 +11,6 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.BeforeClass;
 
-/**
- * @author Tobias Jacobsen
- */
 public class RestApiPersonTest {
 
     public RestApiPersonTest() {
