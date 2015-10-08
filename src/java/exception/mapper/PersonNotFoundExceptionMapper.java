@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import exception.CompanyNotFoundException;
-import exceptions.PersonNotFoundException;
+import exception.PersonNotFoundException;
 import java.util.Arrays;
 import javax.servlet.ServletContext;
 import javax.ws.rs.core.Context;

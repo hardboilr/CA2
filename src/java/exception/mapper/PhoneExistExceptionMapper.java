@@ -4,7 +4,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import exception.CompanyNotFoundException;
-import exceptions.PersonNotFoundException;
+import exception.PersonNotFoundException;
+import exception.PhoneExistException;
 import java.util.Arrays;
 import javax.servlet.ServletContext;
 import javax.ws.rs.core.Context;
@@ -13,7 +14,7 @@ import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
 @Provider
-public class PersonNotFoundExceptionMapper implements ExceptionMapper<PersonNotFoundException> {
+public class PhoneExistExceptionMapper implements ExceptionMapper<PhoneExistException> {
 
     static Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
@@ -21,13 +22,13 @@ public class PersonNotFoundExceptionMapper implements ExceptionMapper<PersonNotF
     ServletContext context;
 
     @Override
-    public Response toResponse(PersonNotFoundException e) {
+    public Response toResponse(PhoneExistException e) {
         JsonObject jo = new JsonObject();
         if(Boolean.valueOf(context.getInitParameter("debug"))){
             jo.addProperty("StackTrace", Arrays.toString(e.getStackTrace()));
         }
         jo.addProperty("Message", e.getMessage());
-        return Response.status(Response.Status.NOT_FOUND).entity(jo.toString()).build();
+        return Response.status(Response.Status.CONFLICT).entity(jo.toString()).build();
     }
 
 }

@@ -1,5 +1,6 @@
 package test;
 
+import deploy.DeploymentConfiguration;
 import entities.Company;
 import exception.CompanyNotFoundException;
 import facade.CompanyFacade;
@@ -11,9 +12,10 @@ import static org.junit.Assert.*;
 
 public class CompanyFacadeTest {
 
-    CompanyFacade facade = new CompanyFacade(Persistence.createEntityManagerFactory("CA2_dev"));
+    CompanyFacade facade = new CompanyFacade(Persistence.createEntityManagerFactory(DeploymentConfiguration.PU_NAME));
 
     public CompanyFacadeTest() {
+//        Persistence.generateSchema("pu_dev", null);
     }
 
     @Before

@@ -1,11 +1,14 @@
 package facade;
 
+import entities.Address;
 import entities.CityInfo;
 import entities.Hobby;
 import entities.Person;
 import entities.Phone;
 import exception.PersonNotFoundException;
+import exception.PhoneExistException;
 import interfaces.IPersonFacade;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -30,18 +33,39 @@ public class PersonFacade implements IPersonFacade {
      * @return
      */
     @Override
-    public Person createPerson(Person person) {
+    public Person createPerson(Person person) throws PhoneExistException {
         EntityManager em = getEntityManager();
-        try {
-            CityInfo citydb = em.find(CityInfo.class, person.getAddress().getCity().getZipCode());
-            if (citydb != null) {
-                citydb.addAddress(person.getAddress());
+        
+        for (Phone phone : person.getPhones()) {
+            Phone p = em.find(Phone.class, phone.getNumber());
+            if (p != null) {
+                throw new PhoneExistException();
             }
-
-//            CityInfo city = em.find(CityInfo.class, person.getAddress().getCity());
-//            if (city == null) {
-//                person.getAddress
-//            }
+        }
+        
+        List<Hobby> hobbies = person.getHobbies();
+        List<Hobby> hobs = new ArrayList();
+        try {
+            for (Hobby hobby : hobbies) {
+                Hobby hob = em.find(Hobby.class, hobby.getName());
+                if (hob != null) {
+                    hobs.add(hob);
+                } else {
+                    hobs.add(hobby);
+                }
+            }
+            person.setHobbies(hobs);
+            
+            Address ad = em.find(Address.class, person.getAddress().getStreet());
+            if(ad != null) {
+                person.setAddress(ad);
+            }
+            
+            CityInfo ci = em.find(CityInfo.class, person.getAddress().getCityInfo().getZipCode());
+            if(ci != null) {
+                person.getAddress().setCityInfo(ci);
+            } 
+            
             em.getTransaction().begin();
             em.persist(person);
             em.getTransaction().commit();

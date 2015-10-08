@@ -61,11 +61,11 @@ public class Address implements Serializable {
         infoEntities.add(ie);
     }
 
-    public CityInfo getCity() {
+    public CityInfo getCityInfo() {
         return city;
     }
 
-    public void setCity(CityInfo city) {
+    public void setCityInfo(CityInfo city) {
         this.city = city;
     }
 }

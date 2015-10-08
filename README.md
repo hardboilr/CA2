@@ -1,27 +1,16 @@
 #CA2
 
-##Day1
+Facade + jUnit-test: Company: Sebastian
+Facade + jUnit-test: Person: Jonas
 
-Entities: [DONE]
+REST-API Person: Jonas
 
-Sebastian: Facade-interface + implementering: Company 
-Jonas: Facade-interface + implementering: Person
+Test af REST-API: Person: Tobias
+Test af REST-API: Company: Tobias
 
-Junit-test af facade: Company
-junit-test af facade: Person
+FrontEnd: Javascript(jquery, ajax) + html + bootstrap: Jonas
 
-Tobias: Opdatering af persistence.xml + Dev-data + Test-data
+Documentation: Sebastian
 
-Sebastian: JSON-converter
-
-Fælles: Error handling(exception mapper)
-
-Jonas: REST-API: Person
-Sebastian: REST-API: Company
-
-Tobias: Rest-assured af REST-API
-
-FrontEnd: Javascript(jquery, ajax) + html + bootstrap
-
-
-
+Security: Fredag
+Deployment: Fredag

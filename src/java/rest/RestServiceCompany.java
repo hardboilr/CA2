@@ -71,7 +71,8 @@ public class RestServiceCompany {
         try{List<Company> companies = facade.getCompaniesValuedMoreThan(marketvalue);
             return Response.ok(JSONConverter.getJSONFromCompany(companies)).build();
             } catch (Exception ex){
-                return Response.ok(JSONConverter.getJSONFromString(ex.getMessage())).build();
+                return Response.ok(null).build();
+//                return Response.ok(JSONConverter.getJSONFromString(ex.getMessage())).build();
             }
     }
 

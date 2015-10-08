@@ -68,8 +68,8 @@ public class JSONConverter {
         joPerson.addProperty("email", person.getEmail());
         joPerson.addProperty("street", person.getAddress().getStreet());
         joPerson.addProperty("additionalInfo", person.getAddress().getAdditionalInfo());
-        joPerson.addProperty("city", person.getAddress().getCity().getCity());
-        joPerson.addProperty("zipcode", person.getAddress().getCity().getZipCode());
+        joPerson.addProperty("city", person.getAddress().getCityInfo().getCity());
+        joPerson.addProperty("zipcode", person.getAddress().getCityInfo().getZipCode());
         JsonArray jaPhone = new JsonArray();
         for (Phone phone : person.getPhones()) {
             JsonObject jso = new JsonObject();
@@ -100,8 +100,8 @@ public class JSONConverter {
             jo.addProperty("email", p.getEmail());
             jo.addProperty("street", p.getAddress().getStreet());
             jo.addProperty("additionalInfo", p.getAddress().getAdditionalInfo());
-            jo.addProperty("city", p.getAddress().getCity().getCity());
-            jo.addProperty("zipcode", p.getAddress().getCity().getZipCode());
+            jo.addProperty("city", p.getAddress().getCityInfo().getCity());
+            jo.addProperty("zipcode", p.getAddress().getCityInfo().getZipCode());
             JsonArray jaPhone = new JsonArray();
             for (Phone phone : p.getPhones()) {
                 JsonObject jso = new JsonObject();
@@ -162,8 +162,8 @@ public class JSONConverter {
         jsonObject.add("phones", jsonArray);
         jsonObject.addProperty("street", c.getAddress().getStreet());
         jsonObject.addProperty("additionalInfo", c.getAddress().getAdditionalInfo());
-        jsonObject.addProperty("zipCode", c.getAddress().getCity().getZipCode());
-        jsonObject.addProperty("city", c.getAddress().getCity().getCity());
+        jsonObject.addProperty("zipCode", c.getAddress().getCityInfo().getZipCode());
+        jsonObject.addProperty("city", c.getAddress().getCityInfo().getCity());
         return gson.toJson(jsonObject);
     }
 
@@ -198,15 +198,11 @@ public class JSONConverter {
             jsoCompany.add("phones", jsoPhoneArray);
             jsoCompany.addProperty("street", c.getAddress().getStreet());
             jsoCompany.addProperty("additionalInfo", c.getAddress().getAdditionalInfo());
-            jsoCompany.addProperty("zipCode", c.getAddress().getCity().getZipCode());
-            jsoCompany.addProperty("city", c.getAddress().getCity().getCity());
+            jsoCompany.addProperty("zipCode", c.getAddress().getCityInfo().getZipCode());
+            jsoCompany.addProperty("city", c.getAddress().getCityInfo().getCity());
             jsoCompanyArray.add(jsoCompany);
         }
         jsoCompanies.add("companies", jsoCompanyArray);
         return gson.toJson(jsoCompanies);
     }
-    
-    public static String getJSONFromString(String message){
-        return gson.toJson(message);
     }
-}

@@ -91,7 +91,7 @@ public class PersonFacadeTest {
         Phone phone = new Phone("12345678", "Mobil");
         Address address = new Address("asdfsa", "asdf");
         CityInfo cityinfo = new CityInfo(3412, "gdasfg");
-        address.setCity(cityinfo);
+        address.setCityInfo(cityinfo);
 
         Person person = new Person("Henrik", "Knudsen");
         person.addHobby(hobby);
