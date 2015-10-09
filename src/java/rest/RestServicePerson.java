@@ -53,7 +53,7 @@ public class RestServicePerson {
     @GET
     @Path("/get/{phone}")
     @Produces("application/json")
-    public Response getPerson(@PathParam("phone") String phone) throws PersonNotFoundException {
+    public Response getPerson(@PathParam("phone") String phone) {
         try {
             Person p = facade.getPerson(phone);
             return Response.ok(JSONConverter.getJSONFromPerson(p)).build();
