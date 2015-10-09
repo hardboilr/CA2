@@ -58,7 +58,7 @@ public class RestServicePerson {
             Person p = facade.getPerson(phone);
             return Response.ok(JSONConverter.getJSONFromPerson(p)).build();
         } catch (PersonNotFoundException ex) {
-            return Response.status(Response.Status.NOT_FOUND).build();
+            return Response.status(Response.Status.NOT_FOUND).entity(ex.getMessage()).build();
         }
     }
 
@@ -70,7 +70,7 @@ public class RestServicePerson {
             List<Person> personList = facade.getPersonsWithHobby(hobby);
             return Response.ok(JSONConverter.getJSONFromPerson(personList)).build();
         } catch (PersonNotFoundException ex) {
-            return Response.status(Response.Status.NOT_FOUND).build();
+            return Response.status(Response.Status.NOT_FOUND).entity(ex.getMessage()).build();
         }
     }
 
@@ -82,7 +82,7 @@ public class RestServicePerson {
             List<Person> personList = facade.getPersonsInCity(zipcode);
             return Response.ok(JSONConverter.getJSONFromPerson(personList)).build();
         } catch (PersonNotFoundException ex) {
-            return Response.status(Response.Status.NOT_FOUND).build();
+            return Response.status(Response.Status.NOT_FOUND).entity(ex.getMessage()).build();
         }
     }
 
@@ -94,7 +94,7 @@ public class RestServicePerson {
             Long count = facade.getPersonCountWithHobby(hobby);
             return Response.ok(JSONConverter.getJSONFromCount(count)).build();
         } catch (PersonNotFoundException ex) {
-            return Response.status(Response.Status.NOT_FOUND).build();
+            return Response.status(Response.Status.NOT_FOUND).entity(ex.getMessage()).build();
         }
     }
 
@@ -102,11 +102,11 @@ public class RestServicePerson {
     @Consumes("application/json")
     @Produces("application/json")
     public Response createPerson(String person) {
-        Person p = JSONConverter.getPersonFromJson(person);
         try {
+            Person p = JSONConverter.getPersonFromJson(person);
             return Response.status(Response.Status.CREATED).entity(JSONConverter.getJSONFromPerson(facade.createPerson(p))).build();
         } catch (PhoneExistException ex) {
-            return Response.status(Response.Status.FORBIDDEN).build();
+            return Response.status(Response.Status.FORBIDDEN).entity(ex.getMessage()).build();
         }
     }
 
@@ -117,9 +117,9 @@ public class RestServicePerson {
     public Response editPerson(@PathParam("phone") String phone, String person) {
         Person p = JSONConverter.getPersonFromJson(person);
         try {
-            return Response.ok(facade.editPerson(p, phone)).build();
+            return Response.ok(JSONConverter.getJSONFromPerson(facade.editPerson(p, phone))).build();
         } catch (PersonNotFoundException ex) {
-            return Response.status(Response.Status.NOT_FOUND).build();
+            return Response.status(Response.Status.NOT_FOUND).entity(ex.getMessage()).build();
         }
     }
 
@@ -128,9 +128,9 @@ public class RestServicePerson {
     @Produces("application/json")
     public Response deletePerson(@PathParam("id") long id) {
         try {
-            return Response.status(Response.Status.OK).entity(facade.deletePerson(id)).build();
+            return Response.status(Response.Status.OK).entity(JSONConverter.getJSONFromPerson(facade.deletePerson(id))).build();
         } catch (PersonNotFoundException ex) {
-            return Response.status(Response.Status.NOT_FOUND).build();
+            return Response.status(Response.Status.NOT_FOUND).entity(ex.getMessage()).build();
         }
     }
 }

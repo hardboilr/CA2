@@ -3,6 +3,7 @@ package utility;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import entities.Address;
 import entities.CityInfo;
@@ -22,22 +23,25 @@ public class JSONConverter {
     }
 
     public static Person getPersonFromJson(String js) {
+        System.out.println("getPersonFromJson:\n" + js);
         Person person = new Person();
         JsonObject jo = gson.fromJson(js, JsonObject.class);
 
         person.setFirstName(jo.get("firstName").getAsString());
         person.setLastName(jo.get("lastName").getAsString());
         person.setEmail(jo.get("email").getAsString());
+        
+        CityInfo city = new CityInfo();
+        city.setCity(jo.get("city").getAsString());
+        city.setZipCode(jo.get("zipCode").getAsInt());
 
         Address address = new Address();
         address.setStreet(jo.get("street").getAsString());
         address.setAdditionalInfo(jo.get("additionalInfo").getAsString());
-        address.addInfoEntity(person);
 
-        CityInfo city = new CityInfo();
-        city.setCity(jo.get("city").getAsString());
-        city.setZipCode(jo.get("zipCode").getAsInt());
-        city.addAddress(address);
+        address.setCityInfo(city);
+        person.setAddress(address);
+        
 
         JsonArray phones = jo.get("phones").getAsJsonArray();
         List<JsonObject> phoneJsonObject = new ArrayList();
@@ -85,7 +89,7 @@ public class JSONConverter {
             jaHobby.add(jso);
         }
         joPerson.add("hobbies", jaHobby);
-        System.out.println(joPerson.toString());
+        System.out.println("getJsonFromPerson:\n" + joPerson.toString());
         return gson.toJson(joPerson);
     }
 
@@ -131,8 +135,38 @@ public class JSONConverter {
     }
 
     public static Company getCompanyFromJson(String js) {
-        System.out.println("jsonString: " + js);
-        Company company = gson.fromJson(js, Company.class);
+        System.out.println("getCompanyFromJson:" + js);
+        
+        Company company = new Company();
+        
+        JsonObject jo = gson.fromJson(js, JsonObject.class);
+        
+        company.setEmail(jo.get("email").getAsString());
+        company.setName(jo.get("name").getAsString());
+        company.setDescription(jo.get("description").getAsString());
+        company.setCvr(jo.get("cvr").getAsInt());
+        company.setNumEmployees(jo.get("numEmployees").getAsInt());
+        company.setMarketValue(jo.get("marketValue").getAsLong());
+        
+        CityInfo city = new CityInfo();
+        city.setCity(jo.get("city").getAsString());
+        city.setZipCode(jo.get("zipCode").getAsInt());
+        
+        Address address = new Address();
+        address.setCityInfo(city);
+        address.setStreet(jo.get("street").getAsString());
+        address.setAdditionalInfo(jo.get("additionalInfo").getAsString());
+        
+        company.setAddress(address);
+        
+        JsonArray phones = jo.get("phones").getAsJsonArray();
+        List<JsonObject> phoneJsonObject = new ArrayList();
+        for (int i = 0; i < phones.size(); i++) {
+            phoneJsonObject.add(phones.get(i).getAsJsonObject());
+        }
+        for (JsonObject phoneJsonObject1 : phoneJsonObject) {
+            company.addPhone(new Phone(phoneJsonObject1.get("number").getAsString(), phoneJsonObject1.get("description").getAsString()));
+        }
         return company;
     }
 
@@ -160,10 +194,12 @@ public class JSONConverter {
             jsonArray.add(jso);
         }
         jsonObject.add("phones", jsonArray);
+        System.out.println("Street: " + c.getAddress().getStreet());
         jsonObject.addProperty("street", c.getAddress().getStreet());
         jsonObject.addProperty("additionalInfo", c.getAddress().getAdditionalInfo());
         jsonObject.addProperty("zipCode", c.getAddress().getCityInfo().getZipCode());
         jsonObject.addProperty("city", c.getAddress().getCityInfo().getCity());
+        System.out.println("getJSONFromCompany: " + jsonObject.toString());
         return gson.toJson(jsonObject);
     }
 
@@ -205,4 +241,4 @@ public class JSONConverter {
         jsoCompanies.add("companies", jsoCompanyArray);
         return gson.toJson(jsoCompanyArray);
     }
-    }
+}

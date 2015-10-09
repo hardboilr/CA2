@@ -3,11 +3,12 @@ package interfaces;
 import entities.CityInfo;
 import entities.Company;
 import exception.CompanyNotFoundException;
+import exception.PhoneExistException;
 import java.util.List;
 
 public interface ICompanyFacade {
 
-    Company createCompany(Company c);
+    Company createCompany(Company c) throws PhoneExistException;
 
     Company getCompany(long cvr) throws CompanyNotFoundException;
 

@@ -71,6 +71,7 @@ public class InfoEntity implements Serializable {
     }
 
     public void setAddress(Address address) {
+        address.addInfoEntity(this);
         this.address = address;
     }
 

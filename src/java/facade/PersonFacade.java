@@ -2,9 +2,11 @@ package facade;
 
 import entities.Address;
 import entities.CityInfo;
+import entities.Company;
 import entities.Hobby;
 import entities.Person;
 import entities.Phone;
+import exception.CompanyNotFoundException;
 import exception.PersonNotFoundException;
 import exception.PhoneExistException;
 import interfaces.IPersonFacade;
@@ -70,36 +72,24 @@ public class PersonFacade implements IPersonFacade {
     }
 
     @Override
-    public Person editPerson(Person person, String phoneNumber) throws PersonNotFoundException {
+    public Person editPerson(Person p, String phoneNumber) throws PersonNotFoundException {
         EntityManager em = getEntityManager();
+        Phone phone = new Phone(phoneNumber, "");
         try {
-            Query query = em.createQuery("SELECT p FROM Person p WHERE :phone MEMBER OF p.phones", Person.class).setParameter("phone", phoneNumber);
-            Person existingPerson = new Person();
-            try {
-                existingPerson = (Person) query.getSingleResult();
-            } catch (NoResultException e) {
-                throw new PersonNotFoundException("Requested person not found!");
-            }
-            CityInfo ci = em.find(CityInfo.class, existingPerson.getAddress().getCityInfo().getZipCode());
-            if (ci != null) {
-                person.getAddress().setCityInfo(ci);
-            }
-
-            Address ad = em.find(Address.class, existingPerson.getAddress().getStreet());
-            if (ad != null) {
-                person.setAddress(ad);
-            }
-
+            Query query = em.createQuery("SELECT p FROM Person p WHERE :phone MEMBER OF p.phones", Person.class).setParameter("phone", phone);
+            Person edited = (Person) query.getSingleResult();
+            edited.setFirstName(p.getFirstName());
+            edited.setLastName(p.getLastName());
+            edited.setAddress(p.getAddress());
+            edited.setEmail(p.getEmail());
+            edited.setHobbies(p.getHobbies());
+            edited.setPhones(p.getPhones());
             em.getTransaction().begin();
-            existingPerson.setAddress(person.getAddress());
-            existingPerson.setEmail(person.getEmail());
-            existingPerson.setFirstName(person.getFirstName());
-            existingPerson.setHobbies(person.getHobbies());
-            existingPerson.setLastName(person.getLastName());
-            existingPerson.setPhones(person.getPhones());
+            em.merge(edited);
             em.getTransaction().commit();
-            return person;
-
+            return edited;
+        } catch (NoResultException e) {
+            throw new PersonNotFoundException("No person found");
         } finally {
             em.close();
         }

@@ -3,6 +3,7 @@ package test;
 import deploy.DeploymentConfiguration;
 import entities.Company;
 import exception.CompanyNotFoundException;
+import exception.PhoneExistException;
 import facade.CompanyFacade;
 import javax.persistence.EntityManager;
 import javax.persistence.Persistence;
@@ -24,9 +25,9 @@ public class CompanyFacadeTest {
         try {
             em.getTransaction().begin();
             em.createQuery("delete from Company").executeUpdate();
-            em.persist(new Company(1234l, "firma", "description", 15, 300000l));
-            em.persist(new Company(123l, "firma2", "description", 15, 300000l));
-            em.persist(new Company(12l, "firma3", "description", 15, 300000l));
+            em.persist(new Company(1234, "firma", "description", 15, 300000l));
+            em.persist(new Company(123, "firma2", "description", 15, 300000l));
+            em.persist(new Company(12, "firma3", "description", 15, 300000l));
             em.getTransaction().commit();
         } finally {
             em.close();
@@ -34,8 +35,8 @@ public class CompanyFacadeTest {
     }
 
     @Test
-    public void testAddCompany() throws CompanyNotFoundException {
-        Company company = new Company(12345l, "firma4", "description", 15, 300000l);
+    public void testAddCompany() throws CompanyNotFoundException, PhoneExistException {
+        Company company = new Company(12345, "firma4", "description", 15, 300000l);
         facade.createCompany(company);
         assertEquals("firma4", company.getName());
         company = facade.getCompany(company.getCvr());
@@ -43,8 +44,8 @@ public class CompanyFacadeTest {
     }
 
     @Test
-    public void testGetCompany() throws CompanyNotFoundException {
-        Company company = new Company(123456l, "firma5", "description", 10, 200000l);
+    public void testGetCompany() throws CompanyNotFoundException, PhoneExistException {
+        Company company = new Company(123456, "firma5", "description", 10, 200000l);
         facade.createCompany(company);
         Company c = facade.getCompany(123456l);
         assertEquals(c.getName(), "firma5");

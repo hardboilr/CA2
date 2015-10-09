@@ -37,6 +37,7 @@ public class RestApiPersonTest {
         when().
                 get("/complete").
                 then().
+                contentType(JSON).
                 statusCode(200).body("id", hasItems(1, 2, 999, 1000)).
                 body("firstName", hasItems("Willie", "Gerald", "Lisa", "Wayne", "Adam")).
                 body("lastName", hasItems("Kennedy", "Ward", "Bailey", "Johnston", "Larson")).
@@ -53,6 +54,7 @@ public class RestApiPersonTest {
         when().
                 get("get/27038971"). //id 1
                 then().
+                contentType(JSON).
                 statusCode(200).body("firstName", equalTo("Christine")).
                 body("lastName", equalTo("Thomas")).
                 body("email", equalTo("cthomas0@live.com")).
@@ -62,6 +64,7 @@ public class RestApiPersonTest {
         when().
                 get("get/14572726"). //id 1000
                 then().
+                contentType(JSON).
                 statusCode(200).body("firstName", equalTo("Willie")).
                 body("lastName", equalTo("Simpson")).
                 body("email", equalTo("wsimpsonrr@eepurl.com")).
@@ -74,8 +77,8 @@ public class RestApiPersonTest {
     public void createPerson() {
         Person p = new Person("Tobias", "Jacobsen");
         p.setEmail("tobias.cbs@gmail.com");
-        Phone phone1 = new Phone("31203083", "iphone");
-        Phone phone2 = new Phone("29654310", "stationary");
+        Phone phone1 = new Phone("98765432", "iphone");
+        Phone phone2 = new Phone("87654321", "stationary");
         p.addPhone(phone1);
         p.addPhone(phone2);
         CityInfo cityInfo = new CityInfo(2000, "Frederiksberg");
@@ -93,6 +96,7 @@ public class RestApiPersonTest {
                 when().
                 post().
                 then().
+                contentType(JSON).
                 statusCode(201).body("firstName", equalTo(p.getFirstName())).
                 body("lastName", equalTo(p.getLastName())).
                 body("hobbies.name", hasItems(p.getHobbies().get(0).getName()));
@@ -102,8 +106,8 @@ public class RestApiPersonTest {
     public void editPerson() {
         Person p = new Person("Tobias", "Jacobsen");
         p.setEmail("tobias.cbs@gmail.com");
-        Phone phone1 = new Phone("31203083", "iphone");
-        Phone phone2 = new Phone("29654310", "stationary");
+        Phone phone1 = new Phone("51887460", "iphone");
+        Phone phone2 = new Phone("53555358", "stationary");
         p.addPhone(phone1);
         p.addPhone(phone2);
         CityInfo cityInfo = new CityInfo(2000, "Frederiksberg");
@@ -114,23 +118,25 @@ public class RestApiPersonTest {
         p.addHobby(hob1);
         p.addHobby(hob2);
 
-        when().
-                get("get/00207391"). //id 9
-                then().
-                statusCode(200).body("firstName", equalTo("Louise")).
-                body("lastName", equalTo("Owens")).
-                body("email", equalTo("lowens8@constantcontact.com")).
-                body("phones.number", hasItems("00207391", "10879785", "87544302"));
-        
         given().
                 contentType(JSON).
                 body(JSONConverter.getJSONFromPerson(p)).
                 when().
-                put().
+                put("/edit/00207391").
                 then().
-                statusCode(201).body("firstName", equalTo(p.getFirstName())).
+                contentType(JSON).
+                statusCode(200).body("firstName", equalTo(p.getFirstName())).
                 body("lastName", equalTo(p.getLastName())).
                 body("hobbies.name", hasItems(p.getHobbies().get(0).getName()));
     }
-
+    
+        @Test //wait for facade implementation
+    public void testDeletePerson() {
+        when().
+                delete("delete/73").
+                then().
+                contentType(JSON).
+                statusCode(200).body("firstName", equalTo("Kevin")).
+                body("lastName", equalTo("Gutierrez"));
+    }
 }
