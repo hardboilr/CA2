@@ -74,42 +74,42 @@
                         <div class="form-group">
                             <label for="InputFirstName">Enter First Name</label>
                             <div class="input-group">
-                                <input type="text" class="form-control" name="InputFirstName" id="createPersonFirstName" placeholder="First Name" required>
+                                <input type="text" class="form-control" name="firstName" id="createPersonFirstName" placeholder="First Name" required>
                                 <span class="input-group-addon"><span class="glyphicon glyphicon-asterisk"></span></span>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="InputLastName">Enter Last Name</label>
                             <div class="input-group">
-                                <input type="text" class="form-control" id="createPersonLastName" name="InputLastName" placeholder="Last Name" required>
+                                <input type="text" class="form-control" id="createPersonLastName" name="lastName" placeholder="Last Name" required>
                                 <span class="input-group-addon"><span class="glyphicon glyphicon-asterisk"></span></span>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="InputEmail">Enter Email</label>
                             <div class="input-group">
-                                <input type="email" class="form-control" id="createPersonEmail" name="InputEmail" placeholder="Email" required>
+                                <input type="email" class="form-control" id="createPersonEmail" name="email" placeholder="Email" required>
                                 <span class="input-group-addon"><span class="glyphicon glyphicon-asterisk"></span></span>
                             </div>
                         </div>
-                        <div id="phoneNumbers" class="phoneNumbers">
+                        <form id="phoneNumbers" class="phoneNumbers" name="phones">
                             <div class="form-group">
                                 <button id="addPhone" type="button" class="btn btn-defualt">Add another phone number</button>
                             </div>
-                            <div class="form-group" id="phoneNumberDecription">
+                            <div class="form-group" id="phoneNumberDescription">
                                 <label for="InputPhone">Enter Phone Number</label>
                                 <div class="input-group">
-                                    <input type="number" class="phoneNumber form-control" id="createPersonPhoneNumber" name="InputPhone" placeholder="Phone Number" required>
+                                    <input type="number" class="phoneNumber form-control" id="createPersonPhoneNumber" name="number" placeholder="Phone Number" required>
                                     <span class="input-group-addon"><span class="glyphicon glyphicon-asterisk"></span></span>
                                 </div>
                                 <br>
                                 <label for="InputPhone">Enter Phone Description</label>
                                 <div class="input-group">
-                                    <input type="text" class="phoneDescription form-control" id="createPersonPhoneDescription" name="InputPhone" placeholder="Phone Description" required>
+                                    <input type="text" class="phoneDescription form-control" id="createPersonPhoneDescription" name="description" placeholder="Phone Description" required>
                                     <span class="input-group-addon"><span class="glyphicon glyphicon-asterisk"></span></span>
                                 </div>
                             </div>
-                        </div>
+                        </form>
                         <div class="form-group">
                             <label for="InputStreet">Enter Street</label>
                             <div class="input-group">

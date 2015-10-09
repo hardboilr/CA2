@@ -49,7 +49,35 @@ $('#createButton').on('click', function () {
 });
 
 $('#editButton').on('click', function () {
+    var phonesJSON = [{
+            number: $('#create').val()
+        }];
+
+    $('.email').map(function () {
+        return $(this).val();
+    }).get();
+
+//    console.log(JSON.stringify($("form").serialize()));
+
+        console.log(JSON.stringify($('form').serializeObject()));
+
     
+//    $('form').submit(function() {
+////        $('#result').text(JSON.stringify($('form').serializeObject()));
+//        return false;
+//    });
+
+//    var personJSON = {
+//        firstName: $('#createPersonFirstName').val(),
+//        lastName: $('#createPersonLastName').val(),
+//        email: $('#createPersonEmail').val(),
+//        street: $('#createPersonStreet').val(),
+//        additionalInfo: $('#createPersonAdditionalInfo').val(),
+//        zipCode: $('#createPersonZipcode').val(),
+//        phones :
+//    };
+
+//    console.log(JSON.stringify(personJSON));
 });
 
 function findPerson(phoneNumber) {
@@ -125,7 +153,7 @@ function editPerson(person) {
 }
 
 function addPhone() {
-    $('#phoneNumberDecription').clone().appendTo('#phoneNumbers');
+    $('#phoneNumberDescription').clone().appendTo('#phoneNumbers');
 }
 
 function addHobby() {
@@ -133,6 +161,24 @@ function addHobby() {
 
 }
 
-function editPerson(person) {
+function editPersonAPI(person) {
 
 }
+
+
+$.fn.serializeObject = function ()
+{
+    var o = {};
+    var a = this.serializeArray();
+    $.each(a, function () {
+        if (o[this.name] !== undefined) {
+            if (!o[this.name].push) {
+                o[this.name] = [o[this.name]];
+            }
+            o[this.name].push(this.value || '');
+        } else {
+            o[this.name] = this.value || '';
+        }
+    });
+    return o;
+};
