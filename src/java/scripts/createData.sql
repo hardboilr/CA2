@@ -1,18 +1,18 @@
 INSERT INTO CITYINFO (zipcode, city) VALUES ('0555', 'Scanning');
-INSERT INTO CITYINFO (zipcode, city) VALUES ('0800', 'Høje Taastrup');
+
 INSERT INTO CITYINFO (zipcode, city) VALUES ('0877', 'København C');
 INSERT INTO CITYINFO (zipcode, city) VALUES ('0892', 'Sjælland USF P');
 INSERT INTO CITYINFO (zipcode, city) VALUES ('0893', 'Sjælland USF B');
 INSERT INTO CITYINFO (zipcode, city) VALUES ('0894', 'Udbetaling');
 INSERT INTO CITYINFO (zipcode, city) VALUES ('0897', 'eBrevsprækken');
 INSERT INTO CITYINFO (zipcode, city) VALUES ('0899', 'Kommuneservice');
-INSERT INTO CITYINFO (zipcode, city) VALUES ('0900', 'København C');
-INSERT INTO CITYINFO (zipcode, city) VALUES ('0910', 'København C');
+
+
 INSERT INTO CITYINFO (zipcode, city) VALUES ('0917', 'Københavns Pakkecenter');
 INSERT INTO CITYINFO (zipcode, city) VALUES ('0918', 'Københavns Pakke BRC');
 INSERT INTO CITYINFO (zipcode, city) VALUES ('0919', 'Returprint BRC');
 INSERT INTO CITYINFO (zipcode, city) VALUES ('0929', 'København C');
-INSERT INTO CITYINFO (zipcode, city) VALUES ('0960', 'Internationalt Postcenter');
+
 INSERT INTO CITYINFO (zipcode, city) VALUES ('999', 'København C');
 INSERT INTO CITYINFO (zipcode, city) VALUES ('1000', 'København K');
 INSERT INTO CITYINFO (zipcode, city) VALUES ('1001', 'København K');
