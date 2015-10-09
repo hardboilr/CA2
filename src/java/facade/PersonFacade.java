@@ -113,10 +113,9 @@ public class PersonFacade implements IPersonFacade {
         try {
             Query query = em.createQuery("SELECT p FROM Person p WHERE :phone MEMBER OF p.phones", Person.class).setParameter("phone", phone);
             Person p = (Person) query.getSingleResult();
-            if (p == null) {
-                throw new PersonNotFoundException("No person with that phone number found!");
-            }
             return p;
+        } catch (NoResultException e) {
+            throw new PersonNotFoundException("No person with that phone number found!");
         } finally {
             em.close();
         }

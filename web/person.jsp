@@ -46,16 +46,13 @@
         <div class="container" >
             <br>
             <blockquote id="getPersonPhone">
-                <p># 12</p>
-                <p>First Name: Jonas</p>
-                <p>Last Name: Rafn</p>
-                <p>Email: jonaschrafn@gmail.com</p>
-                <p>Phone: 53555358</p>
-                <p>Hobby: Programming</p>
             </blockquote>
-        </div>
-    </div>
 
+            <button class="btn btn-primary" type="button" id="editPersonButton">Edit person</button>
+
+        </div>
+        <br>
+    </div>
 </div>
 
 
@@ -95,11 +92,22 @@
                                 <span class="input-group-addon"><span class="glyphicon glyphicon-asterisk"></span></span>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label for="InputPhone">Enter Phone Number</label>
-                            <div class="input-group">
-                                <input type="number" class="form-control" id="createPersonPhone" name="InputPhone" placeholder="Phone Number" required>
-                                <span class="input-group-addon"><span class="glyphicon glyphicon-asterisk"></span></span>
+                        <div id="phoneNumbers" class="phoneNumbers">
+                            <div class="form-group">
+                                <button id="addPhone" type="button" class="btn btn-defualt">Add another phone number</button>
+                            </div>
+                            <div class="form-group" id="phoneNumberDecription">
+                                <label for="InputPhone">Enter Phone Number</label>
+                                <div class="input-group">
+                                    <input type="number" class="phoneNumber form-control" id="createPersonPhoneNumber" name="InputPhone" placeholder="Phone Number" required>
+                                    <span class="input-group-addon"><span class="glyphicon glyphicon-asterisk"></span></span>
+                                </div>
+                                <br>
+                                <label for="InputPhone">Enter Phone Description</label>
+                                <div class="input-group">
+                                    <input type="text" class="phoneDescription form-control" id="createPersonPhoneDescription" name="InputPhone" placeholder="Phone Description" required>
+                                    <span class="input-group-addon"><span class="glyphicon glyphicon-asterisk"></span></span>
+                                </div>
                             </div>
                         </div>
                         <div class="form-group">
@@ -117,20 +125,35 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="InputCity">Enter City</label>
+                            <label for="InputCity">Enter Zipcode</label>
                             <div class="input-group">
-                                <input type="text" class="form-control" id="createPersonCity" name="InputCity" placeholder="City" required>
+                                <input type="number" class="form-control" id="createPersonZipcode" name="InputCity" placeholder="Zipcode" required>
                                 <span class="input-group-addon"><span class="glyphicon glyphicon-asterisk"></span></span>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label for="InputHobby">Enter Hobby</label>
-                            <div class="input-group">
-                                <input type="text" class="form-control" id="createPersonHobby" name="InputHobby" placeholder="Hobby" required>
-                                <span class="input-group-addon"><span class="glyphicon glyphicon-asterisk"></span></span>
+                        <div class="hobbies" id="hobbies">
+                            <div class="form-group">
+                                <button id="addHobby" type="button" class="btn btn-defualt">Add another hobby</button>
+                            </div>
+                            <div id="hobbyNameDescription">
+                                <div class="form-group">
+                                    <label for="InputHobbyName">Enter Hobby Name</label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="createPersonHobbyName" name="InputHobbyName" placeholder="Hobby Name" required>
+                                        <span class="input-group-addon"><span class="glyphicon glyphicon-asterisk"></span></span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="InputHobbyDescription">Enter Hobby Description</label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="createPersonHobbyDescription" name="InputHobbyDescription" placeholder="Hobby Description" required>
+                                        <span class="input-group-addon"><span class="glyphicon glyphicon-asterisk"></span></span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <input type="submit" name="submit" id="submit" value="Submit" class="btn btn-primary pull-right">
+                        <button  type="button" id="createButton"  class="btn btn-primary pull-right">create</button>
+                        <button  type="button" id="editButton"  class="btn btn-primary pull-right">Edit</button>
                     </div>
                 </form>
             </div>
