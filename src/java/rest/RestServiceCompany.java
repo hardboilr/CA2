@@ -3,9 +3,12 @@ package rest;
 import deploy.DeploymentConfiguration;
 import entities.Company;
 import exception.CompanyNotFoundException;
+import exception.PhoneExistException;
 import facade.CompanyFacade;
 import interfaces.ICompanyFacade;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.ws.rs.core.Context;
@@ -86,14 +89,20 @@ public class RestServiceCompany {
     /*OK*/
     @POST
     @Consumes("application/json")
+    @Produces("application/json")
     public Response createCompany(String company) {
-        Company c = JSONConverter.getCompanyFromJson(company);
-        return Response.status(Response.Status.CREATED).entity(JSONConverter.getJSONFromCompany(facade.createCompany(c))).build();
+        try {
+            Company c = JSONConverter.getCompanyFromJson(company);
+            return Response.status(Response.Status.CREATED).entity(JSONConverter.getJSONFromCompany(facade.createCompany(c))).build();
+        } catch (PhoneExistException ex) {
+            return Response.status(Response.Status.FORBIDDEN).entity(ex.getMessage()).build();
+        }
     }
 
     /*OK*/
     @PUT
     @Consumes("application/json")
+    @Produces("application/json")
     public Response editCompany(String company) {
         Company c = JSONConverter.getCompanyFromJson(company);
         try {
@@ -105,14 +114,15 @@ public class RestServiceCompany {
 
     /*OK*/
     @DELETE
-    @Consumes("application/json")
     @Path("/delete/{cvr}")
+    @Consumes("application/json")
+    @Produces("application/json")
     public Response deleteCompany(@PathParam("cvr") long cvr) {
         try {
             Company c = facade.deleteCompany(cvr);
             return Response.ok(JSONConverter.getJSONFromCompany(c)).build();
         } catch (CompanyNotFoundException ex) {
-            return Response.status(Response.Status.NOT_FOUND).build();
+            return Response.status(Response.Status.NOT_FOUND).entity(ex.getMessage()).build();
         }
     }
 }

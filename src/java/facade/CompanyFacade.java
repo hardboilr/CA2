@@ -1,14 +1,18 @@
 package facade;
 
+import entities.Address;
 import entities.CityInfo;
 import entities.Company;
+import entities.Phone;
 import exception.CompanyNotFoundException;
+import exception.PhoneExistException;
 import interfaces.ICompanyFacade;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
+import utility.JSONConverter;
 
 public class CompanyFacade implements ICompanyFacade {
 
@@ -23,12 +27,31 @@ public class CompanyFacade implements ICompanyFacade {
     }
 
     @Override
-    public Company createCompany(Company c) {
+    public Company createCompany(Company c) throws PhoneExistException {
         EntityManager em = getEntityManager();
+        for (Phone phone : c.getPhones()) {
+            Phone p = em.find(Phone.class, phone.getNumber());
+            if (p != null) {
+                throw new PhoneExistException();
+            } 
+        }
         try {
+            Address ad = em.find(Address.class, c.getAddress().getStreet());
+            if (ad != null) {
+                c.setAddress(ad);
+            }
+
+            CityInfo ci = em.find(CityInfo.class, c.getAddress().getCityInfo().getZipCode());
+            if (ci != null) {
+                c.getAddress().setCityInfo(ci);
+            }
+
             em.getTransaction().begin();
             em.persist(c);
             em.getTransaction().commit();
+
+            System.out.println(JSONConverter.getJSONFromCompany(c));
+
             return c;
         } finally {
             em.close();

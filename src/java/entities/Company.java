@@ -5,7 +5,7 @@ import javax.persistence.Entity;
 @Entity
 public class Company extends InfoEntity {
 
-    private long cvr;
+    private int cvr;
     private String name;
     private String description;
     private int NumEmployees;
@@ -14,7 +14,7 @@ public class Company extends InfoEntity {
     public Company() {
     }
 
-    public Company(long cvr, String name, String description, int NumEmployees, long marketValue) {
+    public Company(int cvr, String name, String description, int NumEmployees, long marketValue) {
         this.cvr = cvr;
         this.name = name;
         this.description = description;
@@ -22,11 +22,11 @@ public class Company extends InfoEntity {
         this.marketValue = marketValue;
     }
 
-    public long getCvr() {
+    public int getCvr() {
         return cvr;
     }
 
-    public void setCvr(long cvr) {
+    public void setCvr(int cvr) {
         this.cvr = cvr;
     }
 

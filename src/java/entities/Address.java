@@ -63,7 +63,7 @@ public class Address implements Serializable {
     }
 
     public void addInfoEntity(InfoEntity ie) {
-        ie.setAddress(this);
+//        ie.setAddress(this);
         infoEntities.add(ie);
     }
 
@@ -72,6 +72,7 @@ public class Address implements Serializable {
     }
 
     public void setCityInfo(CityInfo city) {
+        city.addAddress(this);
         this.city = city;
     }
 }

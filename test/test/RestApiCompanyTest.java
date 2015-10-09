@@ -35,11 +35,11 @@ public class RestApiCompanyTest {
         when().
                 get("/complete").
                 then().
+                contentType(JSON).
                 statusCode(200).body("id", hasItems(1001, 1002, 1999, 2000)).
                 body("name", hasItems("Jaxnation", "Buzzdog", "Pixonyx", "Youspan", "Zoozzy")).
                 body("cvr", hasItems(53924216, 84030264, 90892298, 95344769, 78618755)).
                 body("phones.number[0]", hasItems("65603329", "90231555", "98249125")). //get first phone number (JsonPath)
-                body("phones.number[-1]", hasItems("10824582", "68963554", "84900360")). //get last phone number (JsonPath)
                 body("street", hasItems("9369 Fordem Drive"));
     }
 
@@ -48,6 +48,7 @@ public class RestApiCompanyTest {
         when().
                 get("/94727634").
                 then().
+                contentType(JSON).
                 statusCode(200).body("cvr", equalTo(94727634)).
                 body("name", equalTo("Zoomcast")).
                 body("description", equalTo("sapien iaculis congue vivamus metus arcu")).
@@ -58,9 +59,32 @@ public class RestApiCompanyTest {
                 body("city", equalTo("Karlslunde"));
     }
 
-//    @Test //wait for facade implementation
+    @Test //PASSED
     public void testCreateCompany() {
-        Company c = new Company(31203083l, "Tobias Company", "The bestest company", 1, 1000000l);
+        Company c = new Company(31203083, "Tobias Company", "The bestest company", 1, 1000000l);
+        Phone phone1 = new Phone("46403083", "iphone");
+        Phone phone2 = new Phone("12345678", "stationary");
+        c.addPhone(phone1);
+        c.addPhone(phone2);
+        CityInfo cityInfo = new CityInfo(2000, "Frederiksberg");
+        Address address = new Address("Smallegade 46A", "2. th.", cityInfo);
+        c.setAddress(address);
+        c.setEmail("tobias.cbs@gmail.com");
+        given().
+                contentType(JSON).
+                body(JSONConverter.getJSONFromCompany(c)).
+                when().
+                post().
+                then().
+                contentType(JSON).
+                statusCode(201).body("cvr", equalTo(c.getCvr())).
+                body("name", equalTo(c.getName()));
+    }
+
+    @Test //PASSED
+    public void testUpdateCompany() {
+        Company c = new Company(31203083, "Tobias Company", "The bestest company", 1, 1000000l);
+        c.setCvr(53924216);
         Phone phone1 = new Phone("31203083", "iphone");
         Phone phone2 = new Phone("29654310", "stationary");
         c.addPhone(phone1);
@@ -69,46 +93,24 @@ public class RestApiCompanyTest {
         Address address = new Address("Smallegade 46A", "2. th.", cityInfo);
         c.setAddress(address);
         c.setEmail("tobias.cbs@gmail.com");
-
         given().
                 contentType(JSON).
                 body(JSONConverter.getJSONFromCompany(c)).
                 when().
-                post().
+                put().
                 then().
-                statusCode(201).body("cvr", equalTo(c.getCvr())).
-                body("name", equalTo(c.getName()));
-    }
-
-//    @Test //wait for facade implementation
-    public void testUpdateCompany() {
-        Company c = new Company(31203083l, "Tobias Company", "The bestest company", 1, 1000000l);
-        c.setCvr(53924216);
-        Phone phone1 = new Phone("31203083", "iphone");
-        Phone phone2 = new Phone("29654310", "stationary");
-        c.addPhone(phone1);
-        c.addPhone(phone2);
-        CityInfo cityInfo = new CityInfo();
-        cityInfo.setZipCode(2000);
-        Address address = new Address("Smallegade 46A", "2. th.", cityInfo);
-        c.setAddress(address);
-        c.setEmail("tobias.cbs@gmail.com");
-        given().
                 contentType(JSON).
-                body(JSONConverter.getJSONFromCompany(c)).
-                when().
-                post().
-                then().
                 statusCode(200).body("cvr", equalTo(c.getCvr())).
                 body("name", equalTo(c.getName()));
     }
 
-//    @Test //wait for facade implementation
+    @Test //wait for facade implementation
     public void testDeleteCompany() {
         when().
-                delete("deletee/40544424").
+                delete("delete/41362104").
                 then().
-                statusCode(200).body("cvr", equalTo("40544424")).
-                body("name", equalTo("Edgetag"));
+                contentType(JSON).
+                statusCode(200).body("cvr", equalTo(41362104)).
+                body("name", equalTo("Pixope"));
     }
 }
