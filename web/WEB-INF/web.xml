@@ -63,6 +63,23 @@
             <transport-guarantee>INTEGRAL</transport-guarantee>
         </user-data-constraint>
     </security-constraint>
+    <security-constraint>
+        <display-name>Documentation password protection</display-name>
+        <web-resource-collection>
+            <web-resource-name>Documentation</web-resource-name>
+            <description>Password on documentation page</description>
+            <url-pattern>/documentation.jsp</url-pattern>
+        </web-resource-collection>
+        <web-resource-collection>
+            <web-resource-name>API</web-resource-name>
+            <description>Password API page</description>
+            <url-pattern>/api.jsp</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <description/>
+            <role-name>tester</role-name>
+        </auth-constraint>
+    </security-constraint>
     <login-config>
         <auth-method>BASIC</auth-method>
         <realm-name>UserDatabase</realm-name>

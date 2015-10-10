@@ -2,17 +2,15 @@ var personObject;
 $(document).ready(function () {
     $('#person').hide();
     $('#company').hide();
-    $('#editButton').hide();
+    $('#editButtonPerson').hide();
 });
 
 $('#getCompanyCvrButton').on('click', function () {
-//    alert("hej");
-    $('#company').hide();
+    $('#company').show();
 });
 
-$('#deletePersonButton').on('click', function () {
-//    alert("hej");
-    $('#company').show();
+$('#deleteCompanyButton').on('click', function () {
+    $('#company').hide();
 });
 
 $('#getPersonPhoneButton').on('click', function () {
@@ -23,61 +21,109 @@ $('#getPersonPhoneButton').on('click', function () {
 
 $('#deletePersonButton').on('click', function () {
     deletePerson($('#deletePersonInput').val());
+    $('#deletePersonInput').val('');
     $('#person').hide();
 });
 
 $('#editPersonButton').on('click', function () {
     editPerson(personObject);
-    $('#createButton').hide();
-    $('#editButton').show();
+    $('#createButtonPerson').hide();
+    $('#editButtonPerson').show();
 });
 
-$('#submit').on('click', function () {
-    console.log($('.phone').val());
+$('#createButtonPerson').on('click', function () {
+    phones = [];
+    var number = $('#createPersonPhoneNumber').val();
+    var description = $('#createPersonPhoneDescription').val();
+    item = {};
+    item ['number'] = number;
+    item ['description'] = description;
+    phones.push(item);
+
+    hobbies = [];
+    var name = $('#createPersonHobbyName').val();
+    var description = $('#createPersonHobbyDescription').val();
+    item = {};
+    item ['name'] = name;
+    item ['description'] = description;
+    hobbies.push(item);
+
+
+
+    personJSON = {
+        firstName: $('#createPersonFirstName').val(),
+        lastName: $('#createPersonLastName').val(), email: $('#createPersonEmail').val(),
+        street: $('#createPersonStreet').val(),
+        additionalInfo: $('#createPersonAdditionalInfo').val(),
+        zipCode: $('#createPersonZipcode').val(),
+        city: $('#createPersonCity').val(),
+        phones: phones,
+        hobbies: hobbies
+    };
+
+    console.log(JSON.stringify(personJSON));
+
+    createPersonAPI(JSON.stringify(personJSON));
+
+    $('#createPersonFirstName').val('');
+    $('#createPersonLastName').val('');
+    $('#createPersonEmail').val('');
+    $('#createPersonPhoneDescription').val('');
+    $('#createPersonPhoneNumber').val('');
+    $('#createPersonStreet').val('');
+    $('#createPersonAdditionalInfo').val('');
+    $('#createPersonZipcode').val('');
+    $('#createPersonCity').val('');
+    $('#createPersonHobbyName').val('');
+    $('#createPersonHobbyDescription').val('');
 });
 
-$('#addPhone').on('click', function () {
-    addPhone();
-});
+$('#editButtonPerson').on('click', function () {
+    phones = [];
+    var number = $('#createPersonPhoneNumber').val();
+    var description = $('#createPersonPhoneDescription').val();
+    item = {};
+    item ['number'] = number;
+    item ['description'] = description;
+    phones.push(item);
 
-$('#addHobby').on('click', function () {
-    addHobby();
-});
+    hobbies = [];
+    var name = $('#createPersonHobbyName').val();
+    var description = $('#createPersonHobbyDescription').val();
+    item = {};
+    item ['name'] = name;
+    item ['description'] = description;
+    hobbies.push(item);
 
-$('#createButton').on('click', function () {
 
-});
+    personJSON = {
+        firstName: $('#createPersonFirstName').val(),
+        lastName: $('#createPersonLastName').val(), email: $('#createPersonEmail').val(),
+        street: $('#createPersonStreet').val(),
+        additionalInfo: $('#createPersonAdditionalInfo').val(),
+        zipCode: $('#createPersonZipcode').val(),
+        city: $('#createPersonCity').val(),
+        phones: phones,
+        hobbies: hobbies
+    };
 
-$('#editButton').on('click', function () {
-    var phonesJSON = [{
-            number: $('#create').val()
-        }];
+    console.log(JSON.stringify(personJSON));
 
-    $('.email').map(function () {
-        return $(this).val();
-    }).get();
+    editPersonAPI(JSON.stringify(personJSON), $('#createPersonPhoneNumber').val());
 
-//    console.log(JSON.stringify($("form").serialize()));
-
-        console.log(JSON.stringify($('form').serializeObject()));
-
-    
-//    $('form').submit(function() {
-////        $('#result').text(JSON.stringify($('form').serializeObject()));
-//        return false;
-//    });
-
-//    var personJSON = {
-//        firstName: $('#createPersonFirstName').val(),
-//        lastName: $('#createPersonLastName').val(),
-//        email: $('#createPersonEmail').val(),
-//        street: $('#createPersonStreet').val(),
-//        additionalInfo: $('#createPersonAdditionalInfo').val(),
-//        zipCode: $('#createPersonZipcode').val(),
-//        phones :
-//    };
-
-//    console.log(JSON.stringify(personJSON));
+    $('#createPersonFirstName').val('');
+    $('#createPersonLastName').val('');
+    $('#createPersonEmail').val('');
+    $('#createPersonPhoneDescription').val('');
+    $('#createPersonPhoneNumber').val('');
+    $('#createPersonStreet').val('');
+    $('#createPersonAdditionalInfo').val('');
+    $('#createPersonZipcode').val('');
+    $('#createPersonCity').val('');
+    $('#createPersonHobbyName').val('');
+    $('#createPersonHobbyDescription').val('');
+    $('#getPersonPhone').children().remove();
+    $('#person').hide();
 });
 
 function findPerson(phoneNumber) {
@@ -102,6 +148,8 @@ function updatePersonPanel(person) {
     $.each(person.hobbies, function (index, hobby) {
         $('#getPersonPhone').append('<p class="text-capitalize">' + hobby.name + ": " + hobby.description + '</p>');
     });
+
+    $('#getPersonPhone').append(person.Message);
 }
 
 function deletePerson(id) {
@@ -124,53 +172,40 @@ function editPerson(person) {
         phoneCount++;
         $('#createPersonPhoneNumber').val(phone.number);
         $('#createPersonPhoneDescription').val(phone.description);
-        if (phoneCount < 3) {
-            addPhone();
-        }
     });
-
 
     $('#createPersonStreet').val(person.street);
     $('#createPersonAdditionalInfo').val(person.additionalInfo);
     $('#createPersonZipcode').val(person.zipCode);
+    $('#createPersonCity').val(person.city);
 
     $.each(person.hobbies, function (index, hobby) {
         hobbyCount++;
         $('#createPersonHobbyName').val(hobby.name);
         $('#createPersonHobbyDescription').val(hobby.description);
-        if (hobbyCount < 3) {
-            addHobby();
-        }
     });
 }
 
-function addPhone() {
-    $('#phoneNumberDescription').clone().appendTo('#phoneNumbers');
-}
 
-function addHobby() {
-    $('#hobbyNameDescription').clone().appendTo('#hobbies');
-
-}
-
-function editPersonAPI(person) {
-
-}
-
-
-$.fn.serializeObject = function ()
-{
-    var o = {};
-    var a = this.serializeArray();
-    $.each(a, function () {
-        if (o[this.name] !== undefined) {
-            if (!o[this.name].push) {
-                o[this.name] = [o[this.name]];
-            }
-            o[this.name].push(this.value || '');
-        } else {
-            o[this.name] = this.value || '';
-        }
+function editPersonAPI(person, phone) {
+    var url = "/CA2/api/person/edit/" + phone;
+    $.ajax({
+        url: url,
+        method: 'PUT',
+        data: person,
+        contentType: 'application/json',
+        processData: false
     });
-    return o;
-};
+}
+
+
+function createPersonAPI(person) {
+    var url = "/CA2/api/person/";
+    $.ajax({
+        url: url,
+        method: 'POST',
+        data: person,
+        contentType: 'application/json',
+        processData: false
+    });
+}
