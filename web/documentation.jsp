@@ -296,17 +296,18 @@
         <br>
         <h3 class="text-muted">Implementering af arv</h3>
         <hr/>
-        <p>De to entiteter person og company nedarver fra InfoEntity via annotationen @Inheritance med strategien ?InheritanceType.JOINED?. Vi har valgt at bruge strategien JOINED, da den afspejler forretningsdomænet.  Dvs. de enkelte tabeller indeholder kun de lokale attributter,  samt en primærnøgle som oprettes i InfoEntitytabellen.</p>
+        <p>De to entiteter person og company nedarver fra InfoEntity via annotationen @Inheritance med strategien "InheritanceType.JOINED". Vi har valgt at bruge strategien JOINED, da den afspejler forretningsdomænet.  Dvs. de enkelte tabeller indeholder kun de lokale attributter,  samt en primærnøgle som oprettes i InfoEntitytabellen.</p>
         <br>
         <h3 class="text-muted">Guide til test af system</h3>
         <hr/>
          <h4 class="text-muted">Openshift</h4>
-         <p>På siderne Person og Company, kan alle CRUD funktionerne afprøves for hhv. Person- og Company API</p>
+         <p>På grund af tidmangel er det kun muligt at teste funktionerne på Person siden, Company siden er kun lavet rent grafisk, som et eksempel på hvordan det ville se ud.</p>
+         <p>Dog kan alle funktioner testes via "PostMan", se nedenstående eksempler.</p>
          <br>
          <h4 class="text-muted">Rest Assured</h4>
-         <p>Tilføjelsen af Security Authentication har medført at vores Rest Assured test fejler. For at teste vores api?er  er det derfor nødvendigt at slette alt Security i web.xml filen.  </p>
+         <p>Tilføjelsen af Security Authentication har medført at vores Rest Assured test fejler. For at teste vores api'er er det derfor nødvendigt at slette alt Security i web.xml filen.  </p>
          <br>
-         <h4 class="text-muted">Postman</h4>
+         <h4 class="text-muted">PostMan</h4>
          <p>Eksempler på URL til postman med Basic Authentication 'test' 'test'</p>
          <h5 class="text-muted">CVR</h5>
          <p>https://localhost:8443/CA2/api/company/22350888</p>
