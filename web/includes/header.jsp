@@ -30,7 +30,8 @@
                         <li><a href="index.jsp">Home</a></li>
                         <li><a href="person.jsp">Person</a></li>
                         <li><a href="company.jsp">Company</a></li>
-                        <li><a href="documentation.jsp">Documentation</a></li> 
+                        <li><a href="documentation.jsp">Documentation</a></li>
+                        <li><a href="api.jsp">API'er</a></li>
                     </ul>
                 </div>
             </div>

@@ -84,13 +84,13 @@ public class CompanyFacade implements ICompanyFacade {
     }
 
     @Override
-    public List<Company> getCompaniesInCity(CityInfo city) throws Exception {
+    public List<Company> getCompaniesInCity(CityInfo city) throws CompanyNotFoundException {
         EntityManager em = getEntityManager();
         try {
             Query query = em.createQuery("SELECT c FROM Company c WHERE c.address.city=:city").setParameter("city", city);
             List<Company> cList = query.getResultList();
             if (cList == null) {
-                throw new Exception("fuck dig") /*CompanyNotFoundException("No companies found in that city!")*/;
+                throw new CompanyNotFoundException("fuck dig") /*CompanyNotFoundException("No companies found in that city!")*/;
             }
             return cList;
 
@@ -100,13 +100,13 @@ public class CompanyFacade implements ICompanyFacade {
     }
 
     @Override
-    public List<Company> getCompaniesValuedMoreThan(Long value) throws Exception {
+    public List<Company> getCompaniesValuedMoreThan(Long value) throws CompanyNotFoundException {
         EntityManager em = getEntityManager();
         try {
             Query query = em.createQuery("SELECT c FROM Company c WHERE c.marketValue > :value").setParameter("value", value);
             List<Company> cList = query.getResultList();
             if (cList == null) {
-                throw new Exception("fuck dig")/*throw new CompanyNotFoundException("No companies found with more than " + empCount + "employees")*/;
+                throw new CompanyNotFoundException("No companies found with a marketvalue higher than " + value);
             }
             return cList;
         } finally {
@@ -121,7 +121,7 @@ public class CompanyFacade implements ICompanyFacade {
             Query query = em.createQuery("SELECT c FROM Company c WHERE c.NumEmployees > :empCount").setParameter("empCount", empCount);
             List<Company> cList = query.getResultList();
 
-            if (cList.isEmpty() || cList == null) {
+            if (cList.isEmpty()) {
                 throw new CompanyNotFoundException("No companies found with more than " + empCount + " employees!");
             }
             return cList;

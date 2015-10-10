@@ -71,7 +71,7 @@ public class RestApiCompanyTest {
         c.setAddress(address);
         c.setEmail("tobias.cbs@gmail.com");
         given().
-                contentType(JSON).
+                auth().basic("test","test").
                 body(JSONConverter.getJSONFromCompany(c)).
                 when().
                 post().
@@ -94,7 +94,7 @@ public class RestApiCompanyTest {
         c.setAddress(address);
         c.setEmail("tobias.cbs@gmail.com");
         given().
-                contentType(JSON).
+                auth().basic("test", "test").
                 body(JSONConverter.getJSONFromCompany(c)).
                 when().
                 put().
@@ -106,7 +106,9 @@ public class RestApiCompanyTest {
 
     @Test //wait for facade implementation
     public void testDeleteCompany() {
-        when().
+        given().
+                auth().basic("test", "test").
+                when().
                 delete("delete/41362104").
                 then().
                 contentType(JSON).

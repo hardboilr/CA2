@@ -61,55 +61,43 @@ public class RestServiceCompany {
         }
     }
 
-    /*Not implemented*/
+    /*OK*/
     @GET
     @Path("marketvalue/{marketvalue}")
     @Produces("application/json")
-    public Response getCompanyValuedMoreThan(@PathParam("marketvalue") long marketvalue) {
-        try{List<Company> companies = facade.getCompaniesValuedMoreThan(marketvalue);
-            return Response.ok(JSONConverter.getJSONFromCompany(companies)).build();
-            } catch (Exception ex){
-                return Response.ok(null).build();
-//                return Response.ok(JSONConverter.getJSONFromString(ex.getMessage())).build();
-            }
+    public Response getCompanyValuedMoreThan(@PathParam("marketvalue") long marketvalue) throws Exception {
+        List<Company> companies = facade.getCompaniesValuedMoreThan(marketvalue);
+        return Response.ok(JSONConverter.getJSONFromCompany(companies)).build();
     }
 
-    /*Not implemented*/
+
+    /*OK*/
     @GET
     @Path("employees/{employees}")
     @Produces("application/json")
-    public Response getCompanyMoreEmployeesThan(@PathParam("employees") long employees){
-            try{List<Company> companies = facade.getCompaniesWithEmployeeCount(employees);
-            return Response.ok(JSONConverter.getJSONFromCompany(companies)).build();
-            } catch(CompanyNotFoundException ex){
-                return Response.status(Response.Status.NOT_FOUND).entity(ex.getMessage()).build();
-            }
+    public Response getCompanyMoreEmployeesThan(@PathParam("employees") long employees) throws CompanyNotFoundException {
+        List<Company> companies = facade.getCompaniesWithEmployeeCount(employees);
+        return Response.ok(JSONConverter.getJSONFromCompany(companies)).build();
+
     }
 
     /*OK*/
     @POST
     @Consumes("application/json")
     @Produces("application/json")
-    public Response createCompany(String company) {
-        try {
-            Company c = JSONConverter.getCompanyFromJson(company);
-            return Response.status(Response.Status.CREATED).entity(JSONConverter.getJSONFromCompany(facade.createCompany(c))).build();
-        } catch (PhoneExistException ex) {
-            return Response.status(Response.Status.FORBIDDEN).entity(ex.getMessage()).build();
-        }
+    public Response createCompany(String company) throws PhoneExistException {
+        Company c = JSONConverter.getCompanyFromJson(company);
+        return Response.status(Response.Status.CREATED).entity(JSONConverter.getJSONFromCompany(facade.createCompany(c))).build();
+
     }
 
     /*OK*/
     @PUT
     @Consumes("application/json")
     @Produces("application/json")
-    public Response editCompany(String company) {
+    public Response editCompany(String company) throws CompanyNotFoundException {
         Company c = JSONConverter.getCompanyFromJson(company);
-        try {
-            return Response.ok(JSONConverter.getJSONFromCompany(facade.editCompany(c))).build();
-        } catch (CompanyNotFoundException ex) {
-            return Response.status(Response.Status.NOT_FOUND).entity(ex.getMessage()).build();
-        }
+        return Response.ok(JSONConverter.getJSONFromCompany(facade.editCompany(c))).build();
     }
 
     /*OK*/
@@ -117,12 +105,8 @@ public class RestServiceCompany {
     @Path("/delete/{cvr}")
     @Consumes("application/json")
     @Produces("application/json")
-    public Response deleteCompany(@PathParam("cvr") long cvr) {
-        try {
-            Company c = facade.deleteCompany(cvr);
-            return Response.ok(JSONConverter.getJSONFromCompany(c)).build();
-        } catch (CompanyNotFoundException ex) {
-            return Response.status(Response.Status.NOT_FOUND).entity(ex.getMessage()).build();
-        }
+    public Response deleteCompany(@PathParam("cvr") long cvr) throws CompanyNotFoundException {
+        Company c = facade.deleteCompany(cvr);
+        return Response.ok(JSONConverter.getJSONFromCompany(c)).build();
     }
 }

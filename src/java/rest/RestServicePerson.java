@@ -41,96 +41,63 @@ public class RestServicePerson {
     @Path("/complete")
     @Produces("application/json")
     public Response getAllPersons() {
-        List<Person> persons = null;
-        try {
-            persons = facade.getAllPersons();
-        } catch (Exception ex) {
-            Logger.getLogger(RestServicePerson.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        List<Person> persons = facade.getAllPersons();
         return Response.ok(JSONConverter.getJSONFromPerson(persons)).build();
     }
 
     @GET
     @Path("/get/{phone}")
     @Produces("application/json")
-    public Response getPerson(@PathParam("phone") String phone) {
-        try {
+    public Response getPerson(@PathParam("phone") String phone) throws PersonNotFoundException {
             Person p = facade.getPerson(phone);
             return Response.ok(JSONConverter.getJSONFromPerson(p)).build();
-        } catch (PersonNotFoundException ex) {
-            return Response.status(Response.Status.NOT_FOUND).entity(ex.getMessage()).build();
-        }
     }
 
     @GET
     @Path("/hobby/{hobby}")
     @Produces("application/json")
-    public Response getPersonsWithHobby(@PathParam("hobby") String hobby) {
-        try {
+    public Response getPersonsWithHobby(@PathParam("hobby") String hobby) throws PersonNotFoundException {
             List<Person> personList = facade.getPersonsWithHobby(hobby);
             return Response.ok(JSONConverter.getJSONFromPerson(personList)).build();
-        } catch (PersonNotFoundException ex) {
-            return Response.status(Response.Status.NOT_FOUND).entity(ex.getMessage()).build();
-        }
     }
 
     @GET
     @Path("/city/{zipcode}")
     @Produces("application/json")
-    public Response getPersonsInCity(@PathParam("zipcode") int zipcode) {
-        try {
+    public Response getPersonsInCity(@PathParam("zipcode") int zipcode) throws PersonNotFoundException {
             List<Person> personList = facade.getPersonsInCity(zipcode);
             return Response.ok(JSONConverter.getJSONFromPerson(personList)).build();
-        } catch (PersonNotFoundException ex) {
-            return Response.status(Response.Status.NOT_FOUND).entity(ex.getMessage()).build();
-        }
     }
 
     @GET
     @Path("/hobbycount/{hobby}")
     @Produces("application/json")
-    public Response getPersonCountWithHobby(@PathParam("hobby") String hobby) {
-        try {
+    public Response getPersonCountWithHobby(@PathParam("hobby") String hobby) throws PersonNotFoundException {
             Long count = facade.getPersonCountWithHobby(hobby);
             return Response.ok(JSONConverter.getJSONFromCount(count)).build();
-        } catch (PersonNotFoundException ex) {
-            return Response.status(Response.Status.NOT_FOUND).entity(ex.getMessage()).build();
-        }
     }
 
     @POST
     @Consumes("application/json")
     @Produces("application/json")
-    public Response createPerson(String person) {
-        try {
+    public Response createPerson(String person) throws PhoneExistException {
             Person p = JSONConverter.getPersonFromJson(person);
             return Response.status(Response.Status.CREATED).entity(JSONConverter.getJSONFromPerson(facade.createPerson(p))).build();
-        } catch (PhoneExistException ex) {
-            return Response.status(Response.Status.FORBIDDEN).entity(ex.getMessage()).build();
-        }
     }
 
     @PUT
     @Path("/edit/{phone}")
     @Consumes("application/json")
     @Produces("application/json")
-    public Response editPerson(@PathParam("phone") String phone, String person) {
+    public Response editPerson(@PathParam("phone") String phone, String person) throws PersonNotFoundException {
         Person p = JSONConverter.getPersonFromJson(person);
-        try {
             return Response.ok(JSONConverter.getJSONFromPerson(facade.editPerson(p, phone))).build();
-        } catch (PersonNotFoundException ex) {
-            return Response.status(Response.Status.NOT_FOUND).entity(ex.getMessage()).build();
-        }
     }
 
     @DELETE
     @Path("/delete/{id}")
     @Produces("application/json")
-    public Response deletePerson(@PathParam("id") long id) {
-        try {
+    public Response deletePerson(@PathParam("id") long id) throws PersonNotFoundException {
             return Response.status(Response.Status.OK).entity(JSONConverter.getJSONFromPerson(facade.deletePerson(id))).build();
-        } catch (PersonNotFoundException ex) {
-            return Response.status(Response.Status.NOT_FOUND).entity(ex.getMessage()).build();
-        }
     }
 }

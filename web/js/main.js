@@ -86,14 +86,6 @@ function findPerson(phoneNumber) {
         updatePersonPanel(person);
         personObject = person;
     });
-//    $.ajax({
-//        url: url,
-//        method: 'GET',
-//        succes: function (person) {
-//            updatePersonPanel(person);
-//            personObject = person;
-//        }
-//    });
 }
 
 function updatePersonPanel(person) {

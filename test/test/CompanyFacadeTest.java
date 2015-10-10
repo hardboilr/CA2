@@ -1,7 +1,10 @@
 package test;
 
 import deploy.DeploymentConfiguration;
+import entities.Address;
+import entities.CityInfo;
 import entities.Company;
+import entities.Phone;
 import exception.CompanyNotFoundException;
 import exception.PhoneExistException;
 import facade.CompanyFacade;
@@ -10,66 +13,109 @@ import javax.persistence.Persistence;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.BeforeClass;
 
 public class CompanyFacadeTest {
-
-    CompanyFacade facade = new CompanyFacade(Persistence.createEntityManagerFactory(DeploymentConfiguration.PU_NAME));
+    
+    CompanyFacade facade;
 
     public CompanyFacadeTest() {
-//        Persistence.generateSchema("pu_dev", null);
+    }
+    @BeforeClass
+    public static void setUp(){
+        DeploymentConfiguration.setTestModeOn();
     }
 
     @Before
-    public void setUp() {
+    public void setUpDatabase() {
+        facade = new CompanyFacade(Persistence.createEntityManagerFactory(DeploymentConfiguration.PU_NAME));
         EntityManager em = facade.getEntityManager();
-        try {
-            em.getTransaction().begin();
-            em.createQuery("delete from Company").executeUpdate();
-            em.persist(new Company(1234, "firma", "description", 15, 300000l));
-            em.persist(new Company(123, "firma2", "description", 15, 300000l));
-            em.persist(new Company(12, "firma3", "description", 15, 300000l));
-            em.getTransaction().commit();
-        } finally {
-            em.close();
-        }
     }
 
     @Test
     public void testAddCompany() throws CompanyNotFoundException, PhoneExistException {
-        Company company = new Company(12345, "firma4", "description", 15, 300000l);
+        Company company = new Company(12345, "firma", "description", 15, 300000l);
+        Phone phone = new Phone("34565948","Mobil");
+        company.addPhone(phone);
+        
+        CityInfo ci = new CityInfo(8643, "Ans By");
+        Address address = new Address("2 Scott Trail","1 tv");
+        address.setCityInfo(ci);
+        company.setAddress(address);
+        
         facade.createCompany(company);
-        assertEquals("firma4", company.getName());
+        
+        assertEquals("firma", company.getName());
         company = facade.getCompany(company.getCvr());
-        assertEquals("firma4", company.getName());
+        assertEquals("firma", company.getName());
+        assertEquals("Mobil", company.getPhones().get(0).getDescription());
+        assertEquals("34565948", company.getPhones().get(0).getNumber());
+        assertEquals("2 Scott Trail", company.getAddress().getStreet());
+        assertEquals("Ans By", company.getAddress().getCityInfo().getCity());
+        facade.deleteCompany(company.getCvr());
+    }
+    
+    @Test (expected = PhoneExistException.class)
+    public void testAddCompanyWithExistingPhoneNumber() throws CompanyNotFoundException, PhoneExistException {
+        Company company = new Company(12345, "firma", "description", 15, 300000l);
+        Phone phone = new Phone("00307254","Mobil");
+        company.addPhone(phone);
+        
+        CityInfo ci = new CityInfo(8643, "Ans By");
+        Address address = new Address("2 Scott Trail","1 tv");
+        address.setCityInfo(ci);
+        company.setAddress(address);
+        
+        facade.createCompany(company);
+        assertEquals("Mobil", company.getPhones().get(0).getDescription());
+        facade.deleteCompany(company.getCvr());
     }
 
     @Test
     public void testGetCompany() throws CompanyNotFoundException, PhoneExistException {
-        Company company = new Company(123456, "firma5", "description", 10, 200000l);
+        Company company = new Company(12345, "firma", "description", 15, 300000l);
+        Phone phone = new Phone("34565948","Mobil");
+        company.addPhone(phone);
+        
+        CityInfo ci = new CityInfo(8643, "Ans By");
+        Address address = new Address("2 Scott Trail","1 tv");
+        address.setCityInfo(ci);
+        company.setAddress(address);
+        
         facade.createCompany(company);
-        Company c = facade.getCompany(123456l);
-        assertEquals(c.getName(), "firma5");
+        Company c = facade.getCompany(12345l);
+        assertEquals("firma", c.getName());
+        facade.deleteCompany(company.getCvr());
+    }
+    
+    @Test(expected = CompanyNotFoundException.class)
+    public void testGetCompanyError() throws CompanyNotFoundException {
+        facade.getCompany(23l);
     }
 
     @Test
-    public void testGetCompanies() {
-        assertEquals(3, facade.getCompanies().size());
+    public void testGetCompanies() throws CompanyNotFoundException {
+        assertEquals(1000, facade.getCompanies().size());
     }
 
     @Test
-    public void testEditCompany() throws CompanyNotFoundException {
-        Company company = facade.getCompany(1234l);
-        company.setName("firma9");
+    public void testEditCompany() throws CompanyNotFoundException, PhoneExistException {
+        Company company = new Company(12345, "firma", "description", 15, 300000l);
+        Phone phone = new Phone("34565948","Mobil");
+        company.addPhone(phone);
+        
+        CityInfo ci = new CityInfo(8643, "Ans By");
+        Address address = new Address("2 Scott Trail","1 tv");
+        address.setCityInfo(ci);
+        company.setAddress(address);
+        
+        facade.createCompany(company);
+        Company com = facade.getCompany(12345l);
+        company.setName("firmaEdited");
         facade.editCompany(company);
-        assertEquals("firma9", company.getName());
-        System.out.println(facade.getCompany(1234l).getName());
-        company = facade.getCompany(1234l);
-        assertEquals("firma9", company.getName());
+        assertEquals("firmaEdited", facade.getCompany(12345l).getName());
+        facade.deleteCompany(company.getCvr());
     }
-
-    @Test
-    public void testDeletePerson() throws CompanyNotFoundException {
-        facade.deleteCompany(12l);
-        assertEquals(facade.getCompanies().size(), 2);
-    }
+    
+    
 }
