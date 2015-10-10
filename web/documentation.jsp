@@ -3,6 +3,8 @@
 <div class="container">
     <h1>Dokumentation</h1>
     <div class="col-sm-12">
+        <h3 class="text-muted">GitHub</h3>
+        <a href="https://github.com/hardboilr/CA2/" target="_blank">https://github.com/hardboilr/CA2/</a>
         <h3 class="text-muted">Design</h3>
         <hr/>
         <p>I den nedenstående model illustreres hvordan applikationen er opbygget.</p>
