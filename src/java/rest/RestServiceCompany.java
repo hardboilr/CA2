@@ -2,8 +2,8 @@ package rest;
 
 import deploy.DeploymentConfiguration;
 import entities.Company;
-import exception.CompanyNotFoundException;
-import exception.PhoneExistException;
+import exception.NotFoundException;
+import exception.ExistException;
 import facade.CompanyFacade;
 import interfaces.ICompanyFacade;
 import java.util.List;
@@ -24,10 +24,6 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.core.Response;
 import utility.JSONConverter;
 
-/**
- * TODO a. Get a list of companies with more than xx employes b. Get a list of
- * companies with marketvalue more than xx
- */
 @Path("company")
 public class RestServiceCompany {
 
@@ -52,16 +48,15 @@ public class RestServiceCompany {
     @GET
     @Path("{cvr}")
     @Produces("application/json")
-    public Response getCompany(@PathParam("cvr") long cvr) {
+    public Response getCompany(@PathParam("cvr") int cvr) {
         try {
             Company c = facade.getCompany(cvr);
             return Response.ok(JSONConverter.getJSONFromCompany(c)).build();
-        } catch (CompanyNotFoundException ex) {
+        } catch (NotFoundException ex) {
             return Response.status(Response.Status.NOT_FOUND).entity(ex.getMessage()).build();
         }
     }
 
-    /*Not implemented*/
     @GET
     @Path("marketvalue/{marketvalue}")
     @Produces("application/json")
@@ -74,19 +69,17 @@ public class RestServiceCompany {
             }
     }
 
-    /*Not implemented*/
     @GET
     @Path("employees/{employees}")
     @Produces("application/json")
     public Response getCompanyMoreEmployeesThan(@PathParam("employees") long employees){
             try{List<Company> companies = facade.getCompaniesWithEmployeeCount(employees);
             return Response.ok(JSONConverter.getJSONFromCompany(companies)).build();
-            } catch(CompanyNotFoundException ex){
+            } catch(NotFoundException ex){
                 return Response.status(Response.Status.NOT_FOUND).entity(ex.getMessage()).build();
             }
     }
 
-    /*OK*/
     @POST
     @Consumes("application/json")
     @Produces("application/json")
@@ -94,12 +87,11 @@ public class RestServiceCompany {
         try {
             Company c = JSONConverter.getCompanyFromJson(company);
             return Response.status(Response.Status.CREATED).entity(JSONConverter.getJSONFromCompany(facade.createCompany(c))).build();
-        } catch (PhoneExistException ex) {
+        } catch (ExistException ex) {
             return Response.status(Response.Status.FORBIDDEN).entity(ex.getMessage()).build();
         }
     }
 
-    /*OK*/
     @PUT
     @Consumes("application/json")
     @Produces("application/json")
@@ -107,21 +99,20 @@ public class RestServiceCompany {
         Company c = JSONConverter.getCompanyFromJson(company);
         try {
             return Response.ok(JSONConverter.getJSONFromCompany(facade.editCompany(c))).build();
-        } catch (CompanyNotFoundException ex) {
+        } catch (NotFoundException ex) {
             return Response.status(Response.Status.NOT_FOUND).entity(ex.getMessage()).build();
         }
     }
 
-    /*OK*/
     @DELETE
     @Path("/delete/{cvr}")
     @Consumes("application/json")
     @Produces("application/json")
-    public Response deleteCompany(@PathParam("cvr") long cvr) {
+    public Response deleteCompany(@PathParam("cvr") int cvr) {
         try {
             Company c = facade.deleteCompany(cvr);
             return Response.ok(JSONConverter.getJSONFromCompany(c)).build();
-        } catch (CompanyNotFoundException ex) {
+        } catch (NotFoundException ex) {
             return Response.status(Response.Status.NOT_FOUND).entity(ex.getMessage()).build();
         }
     }

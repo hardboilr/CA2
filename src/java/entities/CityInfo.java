@@ -3,34 +3,37 @@ package entities;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
+@Table(name = "cityinfo")
 @Entity
 public class CityInfo implements Serializable {
 
     @Id
-    private int zipCode;
+    private String zipCode;
 
     private String city;
 
-    @OneToMany(mappedBy = "city")
+    @OneToMany(mappedBy = "cityInfo", cascade = {CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH, CascadeType.PERSIST})
     private List<Address> addresses = new ArrayList();
 
     public CityInfo() {
     }
 
-    public CityInfo(int zipCode, String city) {
+    public CityInfo(String zipCode, String city) {
         this.zipCode = zipCode;
         this.city = city;
     }
 
-    public int getZipCode() {
+    public String getZipCode() {
         return zipCode;
     }
 
-    public void setZipCode(int zipCode) {
+    public void setZipCode(String zipCode) {
         this.zipCode = zipCode;
     }
 
@@ -51,7 +54,6 @@ public class CityInfo implements Serializable {
     }
 
     public void addAddress(Address a) {
-//        a.setCityInfo(this);
         addresses.add(a);
     }
 }

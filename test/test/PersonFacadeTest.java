@@ -7,7 +7,7 @@ import entities.Hobby;
 import entities.Person;
 import entities.Phone;
 import exception.PersonNotFoundException;
-import exception.PhoneExistException;
+import exception.ExistException;
 import facade.PersonFacade;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -43,7 +43,7 @@ public class PersonFacadeTest {
     }
 
     @Test
-    public void testCreateGetPerson() throws PhoneExistException {
+    public void testCreateGetPerson() throws ExistException {
         Hobby hobby = new Hobby("programming", "software development");
         Phone phone = new Phone("53555358", "Mobil");
         Address address = new Address("233 Oxford street", "3. tv");
@@ -83,7 +83,7 @@ public class PersonFacadeTest {
 
         try {
             pf.createPerson(person);
-        } catch (PhoneExistException ex) {
+        } catch (ExistException ex) {
             Logger.getLogger(PersonFacadeTest.class.getName()).log(Level.SEVERE, null, ex);
         }
 
@@ -112,7 +112,7 @@ public class PersonFacadeTest {
 
         try {
             pf.createPerson(person);
-        } catch (PhoneExistException ex) {
+        } catch (ExistException ex) {
             Logger.getLogger(PersonFacadeTest.class.getName()).log(Level.SEVERE, null, ex);
         }
 

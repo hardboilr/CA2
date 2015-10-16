@@ -2,10 +2,11 @@ package entities;
 
 import java.io.Serializable;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
+@Table(name = "phone")
 @Entity
 public class Phone implements Serializable {
 
@@ -14,7 +15,7 @@ public class Phone implements Serializable {
 
     private String description;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     private InfoEntity infoEntity;
 
     public Phone() {

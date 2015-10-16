@@ -6,9 +6,9 @@ import entities.Company;
 import entities.Hobby;
 import entities.Person;
 import entities.Phone;
-import exception.CompanyNotFoundException;
+import exception.NotFoundException;
 import exception.PersonNotFoundException;
-import exception.PhoneExistException;
+import exception.ExistException;
 import interfaces.IPersonFacade;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,13 +30,13 @@ public class PersonFacade implements IPersonFacade {
     }
 
     @Override
-    public Person createPerson(Person person) throws PhoneExistException {
+    public Person createPerson(Person person) throws ExistException {
         EntityManager em = getEntityManager();
 
         for (Phone phone : person.getPhones()) {
             Phone p = em.find(Phone.class, phone.getNumber());
             if (p != null) {
-                throw new PhoneExistException();
+                throw new ExistException("Person with phone: " + phone.getNumber() + " already exists");
             }
         }
 
@@ -52,7 +52,7 @@ public class PersonFacade implements IPersonFacade {
             }
             person.setHobbies(hobs);
 
-            Address ad = em.find(Address.class, person.getAddress().getStreet());
+            Address ad = em.find(Address.class, person.getAddress().getAddressId().getStreet());
             if (ad != null) {
                 person.setAddress(ad);
             }

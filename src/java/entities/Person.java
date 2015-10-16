@@ -5,14 +5,16 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
+import javax.persistence.Table;
 
+@Table(name = "person")
 @Entity
 public class Person extends InfoEntity {
 
     private String firstName;
     private String lastName;
 
-    @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.PERSIST})
+    @ManyToMany(cascade = CascadeType.DETACH)
     private List<Hobby> hobbies = new ArrayList();
 
     public Person() {

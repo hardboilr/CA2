@@ -3,9 +3,9 @@ package exception.mapper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
-import exception.CompanyNotFoundException;
+import exception.NotFoundException;
 import exception.PersonNotFoundException;
-import exception.PhoneExistException;
+import exception.ExistException;
 import java.util.Arrays;
 import javax.servlet.ServletContext;
 import javax.ws.rs.core.Context;
@@ -14,7 +14,7 @@ import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
 @Provider
-public class PhoneExistExceptionMapper implements ExceptionMapper<PhoneExistException> {
+public class PhoneExistExceptionMapper implements ExceptionMapper<ExistException> {
 
     static Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
@@ -22,7 +22,7 @@ public class PhoneExistExceptionMapper implements ExceptionMapper<PhoneExistExce
     ServletContext context;
 
     @Override
-    public Response toResponse(PhoneExistException e) {
+    public Response toResponse(ExistException e) {
         JsonObject jo = new JsonObject();
         if(Boolean.valueOf(context.getInitParameter("debug"))){
             jo.addProperty("StackTrace", Arrays.toString(e.getStackTrace()));

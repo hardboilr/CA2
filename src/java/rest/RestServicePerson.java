@@ -4,7 +4,7 @@ import com.jayway.restassured.response.ResponseBody;
 import deploy.DeploymentConfiguration;
 import entities.Person;
 import exception.PersonNotFoundException;
-import exception.PhoneExistException;
+import exception.ExistException;
 import facade.PersonFacade;
 import interfaces.IPersonFacade;
 import java.util.List;
@@ -105,7 +105,7 @@ public class RestServicePerson {
         try {
             Person p = JSONConverter.getPersonFromJson(person);
             return Response.status(Response.Status.CREATED).entity(JSONConverter.getJSONFromPerson(facade.createPerson(p))).build();
-        } catch (PhoneExistException ex) {
+        } catch (ExistException ex) {
             return Response.status(Response.Status.FORBIDDEN).entity(ex.getMessage()).build();
         }
     }

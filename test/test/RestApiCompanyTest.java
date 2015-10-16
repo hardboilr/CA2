@@ -14,7 +14,6 @@ import entities.Phone;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItems;
 import org.junit.Test;
-import static org.junit.Assert.*;
 import org.junit.BeforeClass;
 import utility.JSONConverter;
 
@@ -30,7 +29,6 @@ public class RestApiCompanyTest {
         basePath = "/CA2/api/company";
     }
 
-    @Test //PASSED
     public void testGetComplete() {
         when().
                 get("/complete").
@@ -43,7 +41,7 @@ public class RestApiCompanyTest {
                 body("street", hasItems("9369 Fordem Drive"));
     }
 
-    @Test //PASSED
+//    @Test //PASSED
     public void testGetCvr() {
         when().
                 get("/94727634").
@@ -73,6 +71,8 @@ public class RestApiCompanyTest {
         given().
                 contentType(JSON).
                 body(JSONConverter.getJSONFromCompany(c)).
+                with().
+                authentication().basic("test", "test").
                 when().
                 post().
                 then().
@@ -81,7 +81,7 @@ public class RestApiCompanyTest {
                 body("name", equalTo(c.getName()));
     }
 
-    @Test //PASSED
+//    @Test //PASSED
     public void testUpdateCompany() {
         Company c = new Company(31203083, "Tobias Company", "The bestest company", 1, 1000000l);
         c.setCvr(53924216);
@@ -94,6 +94,8 @@ public class RestApiCompanyTest {
         c.setAddress(address);
         c.setEmail("tobias.cbs@gmail.com");
         given().
+                with().
+                authentication().basic("test", "test").
                 contentType(JSON).
                 body(JSONConverter.getJSONFromCompany(c)).
                 when().
@@ -104,9 +106,12 @@ public class RestApiCompanyTest {
                 body("name", equalTo(c.getName()));
     }
 
-    @Test //wait for facade implementation
+//    @Test //PASSED
     public void testDeleteCompany() {
-        when().
+        given().
+                with().
+                authentication().basic("test", "test").
+                when().
                 delete("delete/41362104").
                 then().
                 contentType(JSON).

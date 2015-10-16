@@ -4,58 +4,35 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 @Entity
+@Table(name = "address")
 public class Address implements Serializable {
 
-    @Id
-    private String street;
+    @EmbeddedId
+    private AddressId addressId;
 
-    private String additionalInfo;
-
-    @OneToMany(mappedBy = "address")
+    @OneToMany(mappedBy = "address", cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     private List<InfoEntity> infoEntities = new ArrayList();
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.DETACH, CascadeType.PERSIST})
-    private CityInfo city;
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH, CascadeType.PERSIST})
+    private CityInfo cityInfo;
 
     public Address() {
     }
 
-    public Address(String street, String additionalInfo) {
-        this.street = street;
-        this.additionalInfo = additionalInfo;
-    }
-    
-    public Address(String street, String additionalInfo, CityInfo city) {
-        this.street = street;
-        this.additionalInfo = additionalInfo;
-        this.city = city;
+    public Address(AddressId addressId, CityInfo cityInfo) {
+        this.addressId = addressId;
+        this.cityInfo = cityInfo;
     }
 
     public void setInfoEntities(List<InfoEntity> infoEntities) {
         this.infoEntities = infoEntities;
-    }
-
-    public String getStreet() {
-        return street;
-    }
-
-    public void setStreet(String street) {
-        this.street = street;
-    }
-
-    public String getAdditionalInfo() {
-        return additionalInfo;
-    }
-
-    public void setAdditionalInfo(String additionalInfo) {
-        this.additionalInfo = additionalInfo;
     }
 
     public List<InfoEntity> getInfoEntities() {
@@ -63,16 +40,24 @@ public class Address implements Serializable {
     }
 
     public void addInfoEntity(InfoEntity ie) {
-//        ie.setAddress(this);
         infoEntities.add(ie);
+        ie.setAddress(this);
     }
 
     public CityInfo getCityInfo() {
-        return city;
+        return cityInfo;
     }
 
-    public void setCityInfo(CityInfo city) {
-        city.addAddress(this);
-        this.city = city;
+    public void setCityInfo(CityInfo cityInfo) {
+        cityInfo.addAddress(this);
+        this.cityInfo = cityInfo;
+    }
+
+    public AddressId getAddressId() {
+        return addressId;
+    }
+
+    public void setAddressId(AddressId addressId) {
+        this.addressId = addressId;
     }
 }

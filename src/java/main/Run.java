@@ -6,10 +6,13 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 public class Run {
-
     public static void main(String[] args) {
+        clear();
+    }
+    
+    public static void clear() {
+        DeploymentConfiguration.setTestModeOn();
         EntityManagerFactory emf = Persistence.createEntityManagerFactory(DeploymentConfiguration.PU_NAME);
         EntityManager em = emf.createEntityManager();
     }
-
 }

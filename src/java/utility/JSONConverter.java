@@ -33,11 +33,11 @@ public class JSONConverter {
         
         CityInfo city = new CityInfo();
         city.setCity(jo.get("city").getAsString());
-        city.setZipCode(jo.get("zipCode").getAsInt());
+        city.setZipCode(jo.get("zipCode").getAsString());
 
         Address address = new Address();
-        address.setStreet(jo.get("street").getAsString());
-        address.setAdditionalInfo(jo.get("additionalInfo").getAsString());
+        address.getAddressId().setStreet(jo.get("street").getAsString());
+        address.getAddressId().setAdditionalInfo(jo.get("additionalInfo").getAsString());
 
         address.setCityInfo(city);
         person.setAddress(address);
@@ -69,8 +69,8 @@ public class JSONConverter {
         joPerson.addProperty("firstName", person.getFirstName());
         joPerson.addProperty("lastName", person.getLastName());
         joPerson.addProperty("email", person.getEmail());
-        joPerson.addProperty("street", person.getAddress().getStreet());
-        joPerson.addProperty("additionalInfo", person.getAddress().getAdditionalInfo());
+        joPerson.addProperty("street", person.getAddress().getAddressId().getStreet());
+        joPerson.addProperty("additionalInfo", person.getAddress().getAddressId().getAdditionalInfo());
         joPerson.addProperty("city", person.getAddress().getCityInfo().getCity());
         joPerson.addProperty("zipCode", person.getAddress().getCityInfo().getZipCode());
         JsonArray jaPhone = new JsonArray();
@@ -102,8 +102,8 @@ public class JSONConverter {
             jo.addProperty("firstName", p.getFirstName());
             jo.addProperty("lastName", p.getLastName());
             jo.addProperty("email", p.getEmail());
-            jo.addProperty("street", p.getAddress().getStreet());
-            jo.addProperty("additionalInfo", p.getAddress().getAdditionalInfo());
+            jo.addProperty("street", p.getAddress().getAddressId().getStreet());
+            jo.addProperty("additionalInfo", p.getAddress().getAddressId().getAdditionalInfo());
             jo.addProperty("city", p.getAddress().getCityInfo().getCity());
             jo.addProperty("zipcode", p.getAddress().getCityInfo().getZipCode());
             JsonArray jaPhone = new JsonArray();
@@ -150,12 +150,12 @@ public class JSONConverter {
         
         CityInfo city = new CityInfo();
         city.setCity(jo.get("city").getAsString());
-        city.setZipCode(jo.get("zipCode").getAsInt());
+        city.setZipCode(jo.get("zipCode").getAsString());
         
         Address address = new Address();
         address.setCityInfo(city);
-        address.setStreet(jo.get("street").getAsString());
-        address.setAdditionalInfo(jo.get("additionalInfo").getAsString());
+        address.getAddressId().setStreet(jo.get("street").getAsString());
+        address.getAddressId().setAdditionalInfo(jo.get("additionalInfo").getAsString());
         
         company.setAddress(address);
         
@@ -194,9 +194,9 @@ public class JSONConverter {
             jsonArray.add(jso);
         }
         jsonObject.add("phones", jsonArray);
-        System.out.println("Street: " + c.getAddress().getStreet());
-        jsonObject.addProperty("street", c.getAddress().getStreet());
-        jsonObject.addProperty("additionalInfo", c.getAddress().getAdditionalInfo());
+        System.out.println("Street: " + c.getAddress().getAddressId().getStreet());
+        jsonObject.addProperty("street", c.getAddress().getAddressId().getStreet());
+        jsonObject.addProperty("additionalInfo", c.getAddress().getAddressId().getAdditionalInfo());
         jsonObject.addProperty("zipCode", c.getAddress().getCityInfo().getZipCode());
         jsonObject.addProperty("city", c.getAddress().getCityInfo().getCity());
         System.out.println("getJSONFromCompany: " + jsonObject.toString());
@@ -232,8 +232,8 @@ public class JSONConverter {
                 jsoPhoneArray.add(jsoPhone);
             }
             jsoCompany.add("phones", jsoPhoneArray);
-            jsoCompany.addProperty("street", c.getAddress().getStreet());
-            jsoCompany.addProperty("additionalInfo", c.getAddress().getAdditionalInfo());
+            jsoCompany.addProperty("street", c.getAddress().getAddressId().getStreet());
+            jsoCompany.addProperty("additionalInfo", c.getAddress().getAddressId().getAdditionalInfo());
             jsoCompany.addProperty("zipCode", c.getAddress().getCityInfo().getZipCode());
             jsoCompany.addProperty("city", c.getAddress().getCityInfo().getCity());
             jsoCompanyArray.add(jsoCompany);

@@ -4,12 +4,12 @@ import entities.CityInfo;
 import entities.Hobby;
 import entities.Person;
 import exception.PersonNotFoundException;
-import exception.PhoneExistException;
+import exception.ExistException;
 import java.util.List;
 
 public interface IPersonFacade {
 
-    public Person createPerson(Person person) throws PhoneExistException;
+    public Person createPerson(Person person) throws ExistException;
 
     public Person getPerson(String phone) throws PersonNotFoundException;
 

@@ -3,7 +3,7 @@ package exception.mapper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
-import exception.CompanyNotFoundException;
+import exception.NotFoundException;
 import java.util.Arrays;
 import exception.ErrorMessage;
 import javax.servlet.ServletContext;
@@ -13,7 +13,7 @@ import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
 @Provider
-public class CompanyNotFoundExceptionMapper implements ExceptionMapper<CompanyNotFoundException> {
+public class CompanyNotFoundExceptionMapper implements ExceptionMapper<NotFoundException> {
 
     static Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
@@ -21,7 +21,7 @@ public class CompanyNotFoundExceptionMapper implements ExceptionMapper<CompanyNo
     ServletContext context;
 
     @Override
-    public Response toResponse(CompanyNotFoundException e) {
+    public Response toResponse(NotFoundException e) {
         JsonObject jo = new JsonObject();
         if(Boolean.valueOf(context.getInitParameter("debug"))){
             jo.addProperty("StackTrace", Arrays.toString(e.getStackTrace()));
