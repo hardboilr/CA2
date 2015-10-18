@@ -2,27 +2,25 @@ package facade;
 
 import entities.Address;
 import entities.CityInfo;
-import entities.Company;
 import entities.Hobby;
 import entities.Person;
 import entities.Phone;
-import exception.NotFoundException;
-import exception.PersonNotFoundException;
 import exception.ExistException;
+import exception.NotFoundException;
 import interfaces.IPersonFacade;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.NoResultException;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 
 public class PersonFacade implements IPersonFacade {
 
     private EntityManagerFactory emf;
 
-    public PersonFacade(EntityManagerFactory e) {
-        emf = e;
+    public PersonFacade(EntityManagerFactory emf) {
+        this.emf = emf;
     }
 
     public EntityManager getEntityManager() {
@@ -32,31 +30,32 @@ public class PersonFacade implements IPersonFacade {
     @Override
     public Person createPerson(Person person) throws ExistException {
         EntityManager em = getEntityManager();
-
-        for (Phone phone : person.getPhones()) {
-            Phone p = em.find(Phone.class, phone.getNumber());
-            if (p != null) {
-                throw new ExistException("Person with phone: " + phone.getNumber() + " already exists");
-            }
-        }
-
-        List<Hobby> hobs = new ArrayList();
         try {
+            //check for existing phone number and throw exception
+            for (Phone phone : person.getPhones()) {
+                Phone p = em.find(Phone.class, phone.getNumber());
+                if (p != null) {
+                    throw new ExistException("Phonenumber: " + p.getNumber() + " already exists. Please choose another phonenumber");
+                }
+            }
+
+            //check for existing hobbies
+            List<Hobby> hobbiesCombined = new ArrayList();
             for (Hobby hobby : person.getHobbies()) {
                 Hobby hob = em.find(Hobby.class, hobby.getName());
                 if (hob != null) {
-                    hobs.add(hob);
+                    hobbiesCombined.add(hob);
                 } else {
-                    hobs.add(hobby);
+                    hobbiesCombined.add(hobby);
                 }
             }
-            person.setHobbies(hobs);
-
-            Address ad = em.find(Address.class, person.getAddress().getAddressId().getStreet());
-            if (ad != null) {
-                person.setAddress(ad);
+            person.setHobbies(hobbiesCombined);
+            //check for existing address
+            Address address = em.find(Address.class, person.getAddress().getAddressId());
+            if (address != null) {
+                person.setAddress(address);
             }
-
+            //check for existing cityInfo
             CityInfo ci = em.find(CityInfo.class, person.getAddress().getCityInfo().getZipCode());
             if (ci != null) {
                 person.getAddress().setCityInfo(ci);
@@ -72,71 +71,119 @@ public class PersonFacade implements IPersonFacade {
     }
 
     @Override
-    public Person editPerson(Person p, String phoneNumber) throws PersonNotFoundException {
-        EntityManager em = getEntityManager();
-        Phone phone = new Phone(phoneNumber, "");
-        try {
-            Query query = em.createQuery("SELECT p FROM Person p WHERE :phone MEMBER OF p.phones", Person.class).setParameter("phone", phone);
-            Person edited = (Person) query.getSingleResult();
-            edited.setFirstName(p.getFirstName());
-            edited.setLastName(p.getLastName());
-            edited.setAddress(p.getAddress());
-            edited.setEmail(p.getEmail());
-            edited.setHobbies(p.getHobbies());
-            edited.setPhones(p.getPhones());
-            em.getTransaction().begin();
-            em.merge(edited);
-            em.getTransaction().commit();
-            return edited;
-        } catch (NoResultException e) {
-            throw new PersonNotFoundException("No person found");
-        } finally {
-            em.close();
-        }
-    }
-
-    @Override
-    public Person getPerson(String phoneNumber) throws PersonNotFoundException {
+    public Person getPerson(String phoneNumber) throws NotFoundException {
         EntityManager em = getEntityManager();
         Phone phone = new Phone();
         phone.setNumber(phoneNumber);
         try {
-            Query query = em.createQuery("SELECT p FROM Person p WHERE :phone MEMBER OF p.phones", Person.class).setParameter("phone", phone);
-            Person p = (Person) query.getSingleResult();
-            return p;
-        } catch (NoResultException e) {
-            throw new PersonNotFoundException("No person with that phone number found!");
-        } finally {
-            em.close();
-        }
-    }
-
-    @Override
-    public Person deletePerson(Long id) throws PersonNotFoundException {
-        EntityManager em = getEntityManager();
-        try {
-            Person p = em.find(Person.class, id);
-            if (p == null) {
-                throw new PersonNotFoundException("Requested person not found!");
+            TypedQuery<Person> query = em.createNamedQuery("Person.findByPhone", Person.class).setParameter("phone", phone);
+            List<Person> persons = query.getResultList();
+            if (!persons.isEmpty()) {
+                return persons.get(0);
+            } else {
+                throw new NotFoundException(phoneNotFound(phoneNumber));
             }
-            em.getTransaction().begin();
-            em.remove(p);
-            em.getTransaction().commit();
-            return p;
         } finally {
             em.close();
         }
     }
 
     @Override
-    public List<Person> getPersonsWithHobby(String hobby) throws PersonNotFoundException {
+    public Person editPerson(Person person) throws NotFoundException {
+        EntityManager em = getEntityManager();
+        String phoneNumber = person.getPhones().get(0).getNumber();
+        Phone phone = new Phone(phoneNumber, "");
+        try {
+            //check for existing person and throw exception
+            TypedQuery<Person> query = em.createNamedQuery("Person.findByPhone", Person.class).setParameter("phone", phone);
+            List<Person> persons = query.getResultList();
+            Person editedPerson = new Person();
+            if (!persons.isEmpty()) {
+                editedPerson = persons.get(0);
+            } else {
+                throw new NotFoundException(phoneNotFound(phoneNumber));
+            }
+            //check for existing phone numbers
+            List<Phone> phonesCombined = new ArrayList();
+            for (Phone ph : person.getPhones()) {
+                Phone p = em.find(Phone.class, ph.getNumber());
+                if (p != null) {
+                    phonesCombined.add(p);
+                } else {
+                    phonesCombined.add(ph);
+                }
+            }
+            editedPerson.setPhones(phonesCombined);
+            //check for existing hobbies
+            List<Hobby> hobbiesCombined = new ArrayList();
+            for (Hobby hobby : person.getHobbies()) {
+                Hobby hob = em.find(Hobby.class, hobby.getName());
+                if (hob != null) {
+                    hobbiesCombined.add(hob);
+                } else {
+                    hobbiesCombined.add(hobby);
+                }
+            }
+            //add the hobbies to the edited person (setHobbies overwrite existing hobbies)
+            for (Hobby hobby : hobbiesCombined) {
+                editedPerson.addHobby(hobby);
+            }
+            //check for existing address
+            Address address = em.find(Address.class, person.getAddress().getAddressId());
+            if (address != null) {
+                editedPerson.setAddress(address);
+            } else {
+                editedPerson.setAddress(person.getAddress());
+            }
+            CityInfo cityInfo = em.find(CityInfo.class, person.getAddress().getCityInfo().getZipCode());
+            if (cityInfo != null) {
+                editedPerson.getAddress().setCityInfo(cityInfo);
+            }
+            editedPerson.setEmail(person.getEmail());
+            editedPerson.setFirstName(person.getFirstName());
+            editedPerson.setLastName(person.getLastName());
+            em.getTransaction().begin();
+            em.merge(editedPerson);
+            em.getTransaction().commit();
+            return editedPerson;
+        } finally {
+            em.close();
+        }
+    }
+
+    @Override
+    public Person deletePerson(String phoneNumber) throws NotFoundException {
+        EntityManager em = getEntityManager();
+        Phone phone = new Phone();
+        phone.setNumber(phoneNumber);
+        try {
+            //check for existing person
+            TypedQuery<Person> query = em.createNamedQuery("Person.findByPhone", Person.class).setParameter("phone", phone);
+            List<Person> persons = query.getResultList();
+            Person person = new Person();
+            if (!persons.isEmpty()) {
+                person = persons.get(0);
+                em.getTransaction().begin();
+                em.remove(person);
+                em.getTransaction().commit();
+                return person;
+            } else {
+                throw new NotFoundException(phoneNotFound(phoneNumber));
+            }
+        } finally {
+            em.close();
+        }
+    }
+
+    @Override
+    public List<Person> getPersonsWithHobby(String hobby) throws NotFoundException {
         EntityManager em = getEntityManager();
         Hobby hobbydb = em.find(Hobby.class, hobby);
         try {
             Query query = em.createQuery("SELECT p FROM Person p WHERE :hobby MEMBER OF p.hobbies ").setParameter("hobby", hobbydb);
             List<Person> pList = query.getResultList();
             if (pList == null) {
-                throw new PersonNotFoundException("No persons found with that hobby!");
+                throw new NotFoundException("No persons found with that hobby!");
             }
             return pList;
         } finally {
@@ -146,14 +193,14 @@ public class PersonFacade implements IPersonFacade {
     }
 
     @Override
-    public List<Person> getPersonsInCity(int zipcode) throws PersonNotFoundException {
+    public List<Person> getPersonsInCity(int zipcode) throws NotFoundException {
         EntityManager em = getEntityManager();
         CityInfo city = em.find(CityInfo.class, zipcode);
         try {
             Query query = em.createQuery("SELECT p FROM Person p WHERE p.address.city=:city").setParameter("city", city);
             List<Person> pList = query.getResultList();
             if (pList == null) {
-                throw new PersonNotFoundException("No persons found in that city!");
+                throw new NotFoundException("No persons found in that city!");
             }
             return pList;
 
@@ -183,5 +230,9 @@ public class PersonFacade implements IPersonFacade {
         } finally {
             em.close();
         }
+    }
+
+    private String phoneNotFound(String phone) {
+        return "No person with " + phone + " found.";
     }
 }

@@ -3,6 +3,7 @@ package entities;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
@@ -45,6 +46,7 @@ public class Hobby implements Serializable {
     }
 
     public void addPerson(Person p) {
+        p.addHobby(this);
         persons.add(p);
     }
 
@@ -53,6 +55,9 @@ public class Hobby implements Serializable {
     }
 
     public void setPersons(List<Person> persons) {
+        for (Person p : persons) {
+            p.addHobby(this);
+        }
         this.persons = persons;
     }
 }

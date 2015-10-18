@@ -70,7 +70,6 @@ public class InfoEntity implements Serializable {
     }
 
     public void setAddress(Address address) {
-//        address.addInfoEntity(this); // this fixed "editCompany". see addInfoEntity in Address
         this.address = address;
     }
 

@@ -32,12 +32,12 @@ public class CompanyFacade implements ICompanyFacade {
         EntityManager em = getEntityManager();
         try {
             try {
-                //check for existing cvr
+                //check for existing cvr and throw exception
                 TypedQuery<Company> query = em.createNamedQuery("Company.findByCvr", Company.class).setParameter("cvr", company.getCvr());
             } catch (NoResultException e) {
                 throw new ExistException("Company with cvr: " + company.getCvr() + " already exists. Please choose another cvr");
             }
-            //check for existing phone number
+            //check for existing phone number and throw exception
             for (Phone phone : company.getPhones()) {
                 Phone p = em.find(Phone.class, phone.getNumber());
                 if (p != null) {
@@ -84,7 +84,7 @@ public class CompanyFacade implements ICompanyFacade {
         EntityManager em = getEntityManager();
         em.getTransaction().begin();
         try {
-            //check for existing company
+            //check for existing company and throw exception
             TypedQuery<Company> query = em.createNamedQuery("Company.findByCvr", Company.class).setParameter("cvr", company.getCvr());
             List<Company> companies = query.getResultList();
             Company editedCompany = new Company();
@@ -103,25 +103,23 @@ public class CompanyFacade implements ICompanyFacade {
                     phonesCombined.add(phone);
                 }
             }
-            //check for existing address
+            editedCompany.setPhones(phonesCombined);
+            //check for existing address 
             Address address = em.find(Address.class, company.getAddress().getAddressId());
-            Address addressCombined;
             if (address != null) {
-                addressCombined = address;
+                editedCompany.setAddress(address);
             } else {
-                addressCombined = company.getAddress();
-                CityInfo cityInfo = em.find(CityInfo.class, company.getAddress().getCityInfo().getZipCode());
-                if (cityInfo != null) {
-                    addressCombined.setCityInfo(cityInfo);
-                }
+                editedCompany.setAddress(company.getAddress());
+            }
+            CityInfo cityInfo = em.find(CityInfo.class, company.getAddress().getCityInfo().getZipCode());
+            if (cityInfo != null) {
+                editedCompany.getAddress().setCityInfo(cityInfo);
             }
             editedCompany.setEmail(company.getEmail());
             editedCompany.setName(company.getName());
             editedCompany.setDescription((company.getDescription()));
             editedCompany.setNumEmployees(company.getNumEmployees());
             editedCompany.setMarketValue(company.getMarketValue());
-            editedCompany.setAddress(addressCombined);
-            editedCompany.setPhones(phonesCombined);
             em.getTransaction().commit();
             return editedCompany;
         } finally {

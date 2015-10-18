@@ -1,27 +1,25 @@
 package interfaces;
 
-import entities.CityInfo;
-import entities.Hobby;
 import entities.Person;
-import exception.PersonNotFoundException;
 import exception.ExistException;
+import exception.NotFoundException;
 import java.util.List;
 
 public interface IPersonFacade {
 
     public Person createPerson(Person person) throws ExistException;
 
-    public Person getPerson(String phone) throws PersonNotFoundException;
+    public Person getPerson(String phone) throws NotFoundException;
 
-    public Person editPerson(Person person, String phone) throws PersonNotFoundException;
+    public Person editPerson(Person person) throws NotFoundException;
 
-    public Person deletePerson(Long id) throws PersonNotFoundException;
+    public Person deletePerson(String phone) throws NotFoundException;
 
-    public List<Person> getPersonsWithHobby(String hobby) throws PersonNotFoundException;
+    public List<Person> getPersonsWithHobby(String hobby) throws NotFoundException;
 
-    public List<Person> getPersonsInCity(int zipcode) throws PersonNotFoundException;
+    public List<Person> getPersonsInCity(int zipcode) throws NotFoundException;
 
-    public Long getPersonCountWithHobby(String hobby) throws PersonNotFoundException;
+    public Long getPersonCountWithHobby(String hobby) throws NotFoundException;
 
     public List<Person> getAllPersons();
 }

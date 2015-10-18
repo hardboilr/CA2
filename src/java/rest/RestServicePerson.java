@@ -5,6 +5,7 @@ import deploy.DeploymentConfiguration;
 import entities.Person;
 import exception.PersonNotFoundException;
 import exception.ExistException;
+import exception.NotFoundException;
 import facade.PersonFacade;
 import interfaces.IPersonFacade;
 import java.util.List;
@@ -57,7 +58,7 @@ public class RestServicePerson {
         try {
             Person p = facade.getPerson(phone);
             return Response.ok(JSONConverter.getJSONFromPerson(p)).build();
-        } catch (PersonNotFoundException ex) {
+        } catch (NotFoundException ex) {
             return Response.status(Response.Status.NOT_FOUND).entity(ex.getMessage()).build();
         }
     }
@@ -69,7 +70,7 @@ public class RestServicePerson {
         try {
             List<Person> personList = facade.getPersonsWithHobby(hobby);
             return Response.ok(JSONConverter.getJSONFromPerson(personList)).build();
-        } catch (PersonNotFoundException ex) {
+        } catch (NotFoundException ex) {
             return Response.status(Response.Status.NOT_FOUND).entity(ex.getMessage()).build();
         }
     }
@@ -81,7 +82,7 @@ public class RestServicePerson {
         try {
             List<Person> personList = facade.getPersonsInCity(zipcode);
             return Response.ok(JSONConverter.getJSONFromPerson(personList)).build();
-        } catch (PersonNotFoundException ex) {
+        } catch (NotFoundException ex) {
             return Response.status(Response.Status.NOT_FOUND).entity(ex.getMessage()).build();
         }
     }
@@ -93,7 +94,7 @@ public class RestServicePerson {
         try {
             Long count = facade.getPersonCountWithHobby(hobby);
             return Response.ok(JSONConverter.getJSONFromCount(count)).build();
-        } catch (PersonNotFoundException ex) {
+        } catch (NotFoundException ex) {
             return Response.status(Response.Status.NOT_FOUND).entity(ex.getMessage()).build();
         }
     }
@@ -117,8 +118,8 @@ public class RestServicePerson {
     public Response editPerson(@PathParam("phone") String phone, String person) {
         Person p = JSONConverter.getPersonFromJson(person);
         try {
-            return Response.ok(JSONConverter.getJSONFromPerson(facade.editPerson(p, phone))).build();
-        } catch (PersonNotFoundException ex) {
+            return Response.ok(JSONConverter.getJSONFromPerson(facade.editPerson(p))).build();
+        } catch (NotFoundException ex) {
             return Response.status(Response.Status.NOT_FOUND).entity(ex.getMessage()).build();
         }
     }
@@ -128,8 +129,8 @@ public class RestServicePerson {
     @Produces("application/json")
     public Response deletePerson(@PathParam("id") long id) {
         try {
-            return Response.status(Response.Status.OK).entity(JSONConverter.getJSONFromPerson(facade.deletePerson(id))).build();
-        } catch (PersonNotFoundException ex) {
+            return Response.status(Response.Status.OK).entity(JSONConverter.getJSONFromPerson(facade.deletePerson(""))).build();
+        } catch (NotFoundException ex) {
             return Response.status(Response.Status.NOT_FOUND).entity(ex.getMessage()).build();
         }
     }

@@ -5,16 +5,20 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
-@Table(name = "person")
 @Entity
+@Table(name = "person")
+@NamedQueries({
+    @NamedQuery(name = "Person.findByPhone", query = "SELECT p FROM Person p WHERE :phone MEMBER OF p.phones")})
 public class Person extends InfoEntity {
 
     private String firstName;
     private String lastName;
 
-    @ManyToMany(cascade = CascadeType.DETACH)
+    @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.PERSIST})
     private List<Hobby> hobbies = new ArrayList();
 
     public Person() {
@@ -42,7 +46,7 @@ public class Person extends InfoEntity {
     }
 
     public void addHobby(Hobby hobby) {
-        hobby.addPerson(this);
+//        hobby.addPerson(this);
         hobbies.add(hobby);
     }
 
